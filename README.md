@@ -15,3 +15,6 @@ RandPicker具有多种便于使用的功能，具体如下：
 1. 确保您已经安装了`Visual Studio 2022`及其`.NET 桌面开发`工作负载
 2. `git clone https://github.com/demonbro-dev/RandPicker --depth=1`
 3. 用`Visual Studio 2022`打开`RandPicker.sln`，还原NuGet包，之后生成解决方案即可
+
+## 许可证
+[MIT License](https://github.com/demonbro-dev/RandPicker/blob/master/LICENSE.txt)
