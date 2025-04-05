@@ -116,7 +116,7 @@ namespace RandPicker
                     nameLabel.Text = "无列表数据";
                 }
             }
-            catch (FileNotFoundException) // 这玩意应该找不到文件吧? 但还是把这段留着为好
+            catch (FileNotFoundException)
             {
                 CreateDefaultNamelist(jsonPath);
                 LoadListData();
