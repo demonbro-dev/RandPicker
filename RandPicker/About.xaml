@@ -39,15 +39,15 @@
                 Foreground="#999999"
                 HorizontalAlignment="Center"
                 Margin="0,5,0,0">
-                <Run Text="Licensed under"/>
+                <Run Text="该版本RandPicker将不再受到支持。请考虑迁移至"/>
                 <Hyperlink 
                     x:Name="LicenseLink"
-                    NavigateUri="https://mit-license.org/"
+                    NavigateUri="https://github.com/demonbro-dev/RandPicker/releases/latest"
                     RequestNavigate="Hyperlink_RequestNavigate"
                     Foreground="#63B8FF">
-                    MIT
+                    最新JiT编译版本
                 </Hyperlink>
-                <Run Text="."/>
+                <Run Text="。"/>
             </TextBlock>
         </StackPanel>
 

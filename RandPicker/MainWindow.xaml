@@ -47,7 +47,8 @@
             <Button x:Name="startButton" Content="开始抽选" 
                     MinWidth="120" MinHeight="40" Margin="5" 
                 HorizontalAlignment="Center"/>
-            <CheckBox x:Name="topMostCheckBox" Content="浮动小窗模式" 
+                <Button Content="多抽选模式" Margin="5" MinWidth="120" MinHeight="40" Click="MultiPickButton_Click"/>
+                <CheckBox x:Name="topMostCheckBox" Content="浮动小窗模式" 
                     Margin="5" VerticalAlignment="Center" HorizontalAlignment="Right"
                     Checked="TopMostCheckBox_Checked" Unchecked="TopMostCheckBox_Unchecked"/>
         </StackPanel>
@@ -77,7 +78,6 @@
                 <TranslateTransform x:Name="subMenuTransform" Y="100"/>
             </StackPanel.RenderTransform>
             <Button Content="打开名单管理器" Margin="5" Height="35" MinWidth="100" Click="BtnOpenNameListManager_Click"/>
-            <Button Content="多抽选模式" Margin="5" Height="35" MinWidth="100" Click="MultiPickButton_Click"/>
             <Button Content="关于RandPicker" Margin="5" Height="35" MinWidth="100" Click="AboutButton_Click"/>
         </StackPanel>
         
