@@ -18,7 +18,7 @@ namespace RandPicker
 
             // 动态设置版本号信息，不用在xaml里手动改
             var version = Assembly.GetExecutingAssembly().GetName().Version;
-            versionTextBlock.Text = $"RandPicker v{version.Major}.{version.Minor}.{version.Build}";
+            versionTextBlock.Text = $"RandPicker v{version.Major}.{version.Minor}";
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)

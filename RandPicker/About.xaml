@@ -1,7 +1,6 @@
 ﻿<Window x:Class="RandPicker.About"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="关于 RandPicker" 
         Height="300" Width="400"
         WindowStartupLocation="CenterOwner"
@@ -30,34 +29,26 @@
                 Foreground="#666666"
                 HorizontalAlignment="Center"/>
             <TextBlock 
-                FontSize="14"
+                Text="© Copyright 2025 demonbro."
+                FontSize="13"
+                Foreground="#999999"
+                HorizontalAlignment="Center"
+                Margin="0,5,0,0"/>
+            <TextBlock 
+                FontSize="12"
                 Foreground="#999999"
                 HorizontalAlignment="Center"
                 Margin="0,5,0,0">
-                查看RandPicker项目:
+                <Run Text="Licensed under"/>
                 <Hyperlink 
-                    NavigateUri="https://github.com/demonbro-dev/RandPicker"
+                    x:Name="LicenseLink"
+                    NavigateUri="https://mit-license.org/"
                     RequestNavigate="Hyperlink_RequestNavigate"
                     Foreground="#63B8FF">
-                    <InlineUIContainer>
-                        <svgc:SvgViewbox Source="/Resources/github-mark.svg" Width="32" Height="32"/>
-                    </InlineUIContainer>
+                    MIT
                 </Hyperlink>
-                <Hyperlink 
-                    NavigateUri="https://gitee.com/demonbro-dev/RandPicker"
-                    RequestNavigate="Hyperlink_RequestNavigate"
-                    Foreground="#63B8FF">
-                    <InlineUIContainer>
-                        <svgc:SvgViewbox Source="/Resources/gitee-svgrepo-com.svg" Width="32" Height="32"/>
-                    </InlineUIContainer>
-                </Hyperlink>
+                <Run Text="."/>
             </TextBlock>
-            <TextBlock 
-                Text="© Copyright 2025 demonbro."
-                FontSize="13"
-                Foreground="#AAAAAA"
-                HorizontalAlignment="Center"
-                Margin="0,5,0,0"/>
         </StackPanel>
 
         <Button Grid.Row="2"
