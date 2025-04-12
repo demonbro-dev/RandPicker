@@ -170,10 +170,8 @@ namespace RandPicker
                     return;
                 }
 
-                // 启动更新程序
                 System.Diagnostics.Process.Start(updaterPath);
 
-                // 完全关闭当前应用
                 Application.Current.Shutdown();
             }
             catch (Exception ex)
