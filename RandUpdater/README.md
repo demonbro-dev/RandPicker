@@ -1,4 +1,4 @@
-![RandUpdaterLogo](/RandPicker/RandUpdater/RandUpdaterLogo.ico) 
+![RandUpdaterLogo](/RandUpdater/RandUpdaterLogo.ico) 
 # **RandUpdater**
  
 ## 这是什么？
