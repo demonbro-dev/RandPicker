@@ -1,5 +1,5 @@
-![RandUpdaterLogo](/RandPicker/RandUpdater/RandUpdaterLogo.ico) 
+![RandUpdaterLogo](/RandUpdater/RandUpdaterLogo.ico) 
 # **RandUpdater**
  
 ## 这是什么？
-RandUpdater是RandUpdater的更新程序。
+RandUpdater是RandPicker的终端更新程序。
