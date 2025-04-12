@@ -3,6 +3,8 @@
 // MainWindow.xaml.cs : RandPicker 程序主页面后台实现
 //
 //
+using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -158,19 +160,24 @@ namespace RandPicker
         {
             try
             {
-                string updaterPath = System.IO.Path.Combine(
-                    System.AppDomain.CurrentDomain.BaseDirectory,
-                    "RandUpdater.exe"
-                );
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string updaterDir = Path.GetFullPath(Path.Combine(baseDir, "..", "RandUpdater"));
+                string updaterPath = Path.Combine(updaterDir, "RandUpdater.exe");
 
-                if (!System.IO.File.Exists(updaterPath))
+                if (!File.Exists(updaterPath))
                 {
-                    MessageBox.Show("未找到更新程序 RandUpdater", "错误",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"找不到更新程序路径: {updaterPath}",
+                        "错误",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                     return;
                 }
 
-                System.Diagnostics.Process.Start(updaterPath);
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = updaterPath,
+                    WorkingDirectory = updaterDir  
+                });
 
                 Application.Current.Shutdown();
             }
