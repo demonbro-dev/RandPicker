@@ -3,6 +3,7 @@
 // MainWindow.xaml.cs : RandPicker 程序主页面后台实现
 //
 //
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -151,6 +152,37 @@ namespace RandPicker
             HideOriginalUI();
             mainFrame.Visibility = Visibility.Visible;
             mainFrame.Navigate(new MultiPickMode(logic));
+        }
+
+        private void CheckUpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string updaterPath = System.IO.Path.Combine(
+                    System.AppDomain.CurrentDomain.BaseDirectory,
+                    "RandUpdater.exe"
+                );
+
+                if (!System.IO.File.Exists(updaterPath))
+                {
+                    MessageBox.Show("未找到更新程序 RandUpdater", "错误",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // 启动更新程序
+                System.Diagnostics.Process.Start(updaterPath);
+
+                // 完全关闭当前应用
+                Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"启动更新程序失败: {ex.Message}",
+                    "操作异常",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
         public void ReturnToMain()
         {

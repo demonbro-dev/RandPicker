@@ -78,6 +78,7 @@
             </StackPanel.RenderTransform>
             <Button Content="打开名单管理器" Margin="5" Height="35" MinWidth="100" Click="BtnOpenNameListManager_Click"/>
             <Button Content="多抽选模式" Margin="5" Height="35" MinWidth="100" Click="MultiPickButton_Click"/>
+            <Button Content="检查更新" Margin="5" Height="35" MinWidth="100" Click="CheckUpdateButton_Click"/>
             <Button Content="关于RandPicker" Margin="5" Height="35" MinWidth="100" Click="AboutButton_Click"/>
         </StackPanel>
         
