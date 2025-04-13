@@ -39,16 +39,22 @@
                     NavigateUri="https://github.com/demonbro-dev/RandPicker"
                     RequestNavigate="Hyperlink_RequestNavigate"
                     Foreground="#63B8FF">
+                    <Hyperlink.ToolTip>
+                        <TextBlock Text="在GitHub上查看" FontSize="12" FontWeight="Normal" />
+                    </Hyperlink.ToolTip>
                     <InlineUIContainer>
-                        <svgc:SvgViewbox Source="/Resources/github-mark.svg" Width="32" Height="32"/>
+                        <Image Source="{StaticResource github_markDrawingImage}" Margin="2,2,0,2" Width="32" Height="32"></Image>
                     </InlineUIContainer>
                 </Hyperlink>
                 <Hyperlink 
                     NavigateUri="https://gitee.com/demonbro-dev/RandPicker"
                     RequestNavigate="Hyperlink_RequestNavigate"
                     Foreground="#63B8FF">
+                    <Hyperlink.ToolTip>
+                        <TextBlock Text="在Gitee上查看" FontSize="12" FontWeight="Normal" />
+                    </Hyperlink.ToolTip>
                     <InlineUIContainer>
-                        <svgc:SvgViewbox Source="/Resources/gitee-svgrepo-com.svg" Width="32" Height="32"/>
+                        <Image Source="{StaticResource gitee_svgrepo_comDrawingImage}" Margin="2,2,0,2" Width="32" Height="32"></Image>
                     </InlineUIContainer>
                 </Hyperlink>
             </TextBlock>

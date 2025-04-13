@@ -13,8 +13,6 @@
   <ItemGroup>
     <None Remove="namelist.json" />
     <None Remove="RandPickerLogo.png" />
-    <None Remove="Resources\gitee-svgrepo-com.svg" />
-    <None Remove="Resources\github-mark.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,12 +25,6 @@
   <ItemGroup>
     <PackageReference Include="HandyControl" Version="3.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\gitee-svgrepo-com.svg" />
-    <Resource Include="Resources\github-mark.svg" />
   </ItemGroup>
 
 </Project>
