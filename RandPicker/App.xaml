@@ -9,6 +9,7 @@
                 <!-- 合并HandyControl默认主题 -->
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
+                <ResourceDictionary Source="/Resources/IconsDictionary.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="CaptionTextStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="24"/>
