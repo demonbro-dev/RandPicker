@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:hc="https://handyorg.github.io/handycontrol"
-        xmlns:local="clr-namespace:RandPicker"
         xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
         mc:Ignorable="PresentationOptions"
         SizeToContent="Manual"
@@ -111,7 +110,6 @@
     </Grid>
     
     <Window.Resources>
-        <local:NegativeValueConverter x:Key="NegativeValueConverter"/>
         <Storyboard x:Key="SlideUpAnimation">
             <DoubleAnimation Storyboard.TargetName="displayTransform"
                             Storyboard.TargetProperty="Y"
@@ -143,56 +141,39 @@
         </Storyboard>
 
         <Storyboard x:Key="SlideToLeft">
-            <DoubleAnimation x:Name="SlideToLeftOriginalAnim"
-                        Storyboard.TargetName="originalTransform"
+            <DoubleAnimation Storyboard.TargetName="originalTransform"
                         Storyboard.TargetProperty="X"
-                        From="0" To="0"
-                        Duration="0:0:0.3"/>
-            <DoubleAnimation x:Name="SlideToLeftFrameAnim"
-                        Storyboard.TargetName="frameTransform"
+                        From="0" To="-800" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetName="frameTransform"
                         Storyboard.TargetProperty="X"
-                        From="0" To="0"
-                        Duration="0:0:0.3"/>
+                        From="800" To="0" Duration="0:0:0.4"/>
         </Storyboard>
 
         <Storyboard x:Key="SlideFromLeft">
-            <DoubleAnimation x:Name="SlideFromLeftOriginalAnim"  
-                        Storyboard.TargetName="originalTransform"  
-                        Storyboard.TargetProperty="X"  
-                        From="0"  To="0"  
-                        Duration="0:0:0.3"/>
-            <DoubleAnimation x:Name="SlideFromLeftFrameAnim"
-                        Storyboard.TargetName="frameTransform"
+            <DoubleAnimation Storyboard.TargetName="originalTransform"
                         Storyboard.TargetProperty="X"
-                        From="0" To="0"
-                        Duration="0:0:0.3"/>
+                        From="-800" To="0" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetName="frameTransform"
+                        Storyboard.TargetProperty="X"
+                        From="0" To="800" Duration="0:0:0.4"/>
         </Storyboard>
 
         <Storyboard x:Key="SlideToRight">
-            <DoubleAnimation x:Name="SlideToRightOriginalAnim"
-                        Storyboard.TargetName="originalTransform"
+            <DoubleAnimation Storyboard.TargetName="originalTransform"
                         Storyboard.TargetProperty="X"
-                        From="0" To="0" 
-                        Duration="0:0:0.3"/>
-            <DoubleAnimation x:Name="SlideToRightFrameAnim"
-                        Storyboard.TargetName="frameTransform"
+                        From="0" To="800" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetName="frameTransform"
                         Storyboard.TargetProperty="X"
-                        From="0" To="0" 
-                        Duration="0:0:0.3"/>
+                        From="-800" To="0" Duration="0:0:0.4"/>
         </Storyboard>
 
-        <!-- SlideFromRight -->
         <Storyboard x:Key="SlideFromRight">
-            <DoubleAnimation x:Name="SlideFromRightOriginalAnim"
-                        Storyboard.TargetName="originalTransform"
+            <DoubleAnimation Storyboard.TargetName="originalTransform"
                         Storyboard.TargetProperty="X"
-                        From="0" To="0" 
-                        Duration="0:0:0.3"/>
-            <DoubleAnimation x:Name="SlideFromRightFrameAnim"
-                        Storyboard.TargetName="frameTransform"
+                        From="800" To="0" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetName="frameTransform"
                         Storyboard.TargetProperty="X"
-                        From="0" To="0" 
-                        Duration="0:0:0.3"/>
+                        From="0" To="-800" Duration="0:0:0.4"/>
         </Storyboard>
     </Window.Resources>
 </Window>
