@@ -24,7 +24,7 @@ namespace RandUpdater
             {
                 Console.WriteLine("##################################\n#\n# RandUpdater V1\n# Copyright 2025 demonbro. All Rights Reserved.\n#\n##################################\n");
 
-                var defaultRepoUrl = "https://github.com/demonbro-dev/RandPicker";
+                var defaultRepoUrl = "https://gitee.com/demonbro-dev/RandPicker";
                 var (owner, repo, source) = ParseRepositoryUrl(defaultRepoUrl);
 
                 var latestRelease = await GetLatestRelease(owner, repo, source);
@@ -44,12 +44,12 @@ namespace RandUpdater
                         Console.WriteLine("2. Gitee（国内镜像，速度更快）");
                         Console.Write("请输入选项（1/2）: ");
 
-                        SourcePlatform selectedSource = SourcePlatform.GitHub;
+                        SourcePlatform selectedSource = SourcePlatform.Gitee;
                         var key = Console.ReadKey();
                         if (key.KeyChar == '2')
                             selectedSource = SourcePlatform.Gitee;
                         else if (key.KeyChar != '1')
-                            Console.WriteLine("\n无效输入，默认使用GitHub源");
+                            Console.WriteLine("\n无效输入，默认使用Gitee源");
 
                         string newRepoUrl = selectedSource == SourcePlatform.GitHub
                             ? "https://github.com/demonbro-dev/RandPicker"
