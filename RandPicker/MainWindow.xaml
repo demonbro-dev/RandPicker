@@ -14,8 +14,11 @@
           UseLayoutRounding="True"
           RenderOptions.CachingHint="Cache"
           RenderOptions.ClearTypeHint="Enabled">
-        <Grid x:Name="originalContentGrid">
-        <Grid.RowDefinitions>
+        <Grid x:Name="originalContentGrid" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="originalTransform"/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -94,10 +97,16 @@
                 </StackPanel.RenderTransform>
             </StackPanel>
         </Grid>
-        <Frame x:Name="mainFrame" 
-           NavigationUIVisibility="Hidden" 
-           Visibility="Collapsed"
-           Background="White"/>
+        <Grid x:Name="frameContainer" 
+          Visibility="Collapsed"
+          RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="frameTransform" X="800"/>
+            </Grid.RenderTransform>
+            <Frame x:Name="mainFrame" 
+               NavigationUIVisibility="Hidden"
+               Background="White"/>
+        </Grid>
     </Grid>
     
     <Window.Resources>
@@ -129,6 +138,42 @@
             <DoubleAnimation Storyboard.TargetName="subMenuPanel"
                             Storyboard.TargetProperty="Opacity"
                             To="0" Duration="0:0:0.2"/>
+        </Storyboard>
+
+        <Storyboard x:Key="SlideToLeft">
+            <DoubleAnimation Storyboard.TargetName="originalTransform"
+                        Storyboard.TargetProperty="X"
+                        From="0" To="-800" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetName="frameTransform"
+                        Storyboard.TargetProperty="X"
+                        From="800" To="0" Duration="0:0:0.4"/>
+        </Storyboard>
+
+        <Storyboard x:Key="SlideFromLeft">
+            <DoubleAnimation Storyboard.TargetName="originalTransform"
+                        Storyboard.TargetProperty="X"
+                        From="-800" To="0" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetName="frameTransform"
+                        Storyboard.TargetProperty="X"
+                        From="0" To="800" Duration="0:0:0.4"/>
+        </Storyboard>
+
+        <Storyboard x:Key="SlideToRight">
+            <DoubleAnimation Storyboard.TargetName="originalTransform"
+                        Storyboard.TargetProperty="X"
+                        From="0" To="800" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetName="frameTransform"
+                        Storyboard.TargetProperty="X"
+                        From="-800" To="0" Duration="0:0:0.4"/>
+        </Storyboard>
+
+        <Storyboard x:Key="SlideFromRight">
+            <DoubleAnimation Storyboard.TargetName="originalTransform"
+                        Storyboard.TargetProperty="X"
+                        From="800" To="0" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetName="frameTransform"
+                        Storyboard.TargetProperty="X"
+                        From="0" To="-800" Duration="0:0:0.4"/>
         </Storyboard>
     </Window.Resources>
 </Window>

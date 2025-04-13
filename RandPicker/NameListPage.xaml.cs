@@ -191,8 +191,7 @@ namespace RandPicker
         {
             if (Window.GetWindow(this) is MainWindow mainWindow)
             {
-                mainWindow.mainFrame.Visibility = Visibility.Collapsed;
-                mainWindow.ShowOriginalUI();
+                mainWindow.PlayReturnAnimation(isMultiPickMode: false); // 传递参数区分模式
             }
         }
     }

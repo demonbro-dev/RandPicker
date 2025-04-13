@@ -145,17 +145,38 @@ namespace RandPicker
 
         private void BtnOpenNameListManager_Click(object sender, RoutedEventArgs e)
         {
-            HideOriginalUI();
-            mainFrame.Visibility = Visibility.Visible;
+            var storyboard = (Storyboard)FindResource("SlideToRight");
+            frameContainer.Visibility = Visibility.Visible;
             mainFrame.Navigate(new NameListPage());
+
+            storyboard.Completed += (s, _) => HideOriginalUI();
+            storyboard.Begin(this);
         }
         private void MultiPickButton_Click(object sender, RoutedEventArgs e)
         {
-            HideOriginalUI();
-            mainFrame.Visibility = Visibility.Visible;
+            var storyboard = (Storyboard)FindResource("SlideToLeft");
+            frameContainer.Visibility = Visibility.Visible; // 显示容器
             mainFrame.Navigate(new MultiPickMode(logic));
+
+            storyboard.Completed += (s, _) =>
+            {
+                originalContentGrid.Visibility = Visibility.Collapsed; // 隐藏原界面
+            };
+            storyboard.Begin(this);
         }
 
+        public void PlayReturnAnimation(bool isMultiPickMode)
+        {
+            ShowOriginalUI();
+            var storyboard = isMultiPickMode ?
+                (Storyboard)FindResource("SlideFromLeft") :
+                (Storyboard)FindResource("SlideFromRight");
+            storyboard.Completed += (s, _) =>
+            {
+                frameContainer.Visibility = Visibility.Collapsed;
+            };
+            storyboard.Begin(this);
+        }
         private void CheckUpdateButton_Click(object sender, RoutedEventArgs e)
         {
             try
