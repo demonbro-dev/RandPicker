@@ -62,7 +62,7 @@
                  SelectionChanged="ListComboBox_SelectionChanged"/>
                 <Slider x:Name="speedSlider" Minimum="1" Maximum="60" Value="40" 
                  Margin="5" MinWidth="400" Background="DarkGray"/>
-                <Button x:Name="subMenuButton" Content="打开子菜单" Grid.Column="1" 
+                <Button x:Name="subMenuButton" Content="打开子菜单" Grid.Column="1" hc:IconElement.Geometry="{StaticResource UpDownGeometry}"
                 MinWidth="100" Margin="5" Click="SubMenuButton_Click"/>
             </StackPanel>
         </Grid>
