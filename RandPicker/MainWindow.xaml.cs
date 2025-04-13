@@ -35,6 +35,8 @@ namespace RandPicker
                     MessageBox.Show("UI控件未正确初始化");
                     return;
                 }
+                this.SizeChanged += MainWindow_SizeChanged; // 添加窗口大小变化事件
+                UpdateAnimations(); // 初始化动画参数
                 // 初始化PickerLogic
                 this.Loaded += (s, e) =>
                 {
@@ -71,8 +73,7 @@ namespace RandPicker
         }
 
         private bool _isSubMenuOpen = false;
-        private bool _isAnimating = false; 
-
+        private bool _isAnimating = false;
         private void SubMenuButton_Click(object sender, RoutedEventArgs e)
         {
             if (_isAnimating) return;
@@ -142,9 +143,36 @@ namespace RandPicker
         // 隐藏与显示MainWindow初始界面的方法
         public void HideOriginalUI() => originalContentGrid.Visibility = Visibility.Collapsed;
         public void ShowOriginalUI() => originalContentGrid.Visibility = Visibility.Visible;
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateAnimations(); // 窗口大小变化时更新动画参数
+        }
+        private void UpdateAnimations()
+        {
+            var width = this.ActualWidth;
 
+            // 更新SlideToLeft动画
+            var slideToLeft = (Storyboard)Resources["SlideToLeft"];
+            ((DoubleAnimation)slideToLeft.Children[0]).To = -width;
+            ((DoubleAnimation)slideToLeft.Children[1]).From = width;
+
+            // 更新SlideFromLeft动画
+            var slideFromLeft = (Storyboard)Resources["SlideFromLeft"];
+            ((DoubleAnimation)slideFromLeft.Children[0]).From = -width;
+            ((DoubleAnimation)slideFromLeft.Children[1]).To = width;
+
+            // 同理更新SlideToRight和SlideFromRight
+            var slideToRight = (Storyboard)Resources["SlideToRight"];
+            ((DoubleAnimation)slideToRight.Children[0]).To = width;
+            ((DoubleAnimation)slideToRight.Children[1]).From = -width;
+
+            var slideFromRight = (Storyboard)Resources["SlideFromRight"];
+            ((DoubleAnimation)slideFromRight.Children[0]).From = width;
+            ((DoubleAnimation)slideFromRight.Children[1]).To = -width;
+        }
         private void BtnOpenNameListManager_Click(object sender, RoutedEventArgs e)
         {
+            UpdateAnimations();
             var storyboard = (Storyboard)FindResource("SlideToRight");
             frameContainer.Visibility = Visibility.Visible;
             mainFrame.Navigate(new NameListPage());
@@ -154,14 +182,12 @@ namespace RandPicker
         }
         private void MultiPickButton_Click(object sender, RoutedEventArgs e)
         {
+            UpdateAnimations();
             var storyboard = (Storyboard)FindResource("SlideToLeft");
             frameContainer.Visibility = Visibility.Visible; // 显示容器
             mainFrame.Navigate(new MultiPickMode(logic));
 
-            storyboard.Completed += (s, _) =>
-            {
-                originalContentGrid.Visibility = Visibility.Collapsed; // 隐藏原界面
-            };
+            storyboard.Completed += (s, _) => HideOriginalUI();
             storyboard.Begin(this);
         }
 
