@@ -40,7 +40,7 @@ namespace RandPicker
             // 异步初始化摄像头
             Task.Run(() =>
             {
-                _capture = new VideoCapture(0);
+                _capture = new VideoCapture(0, VideoCaptureAPIs.DSHOW);
                 if (!_capture.IsOpened())
                 {
                     Dispatcher.Invoke(() => MessageBox.Show("摄像头初始化失败"));
