@@ -146,12 +146,20 @@
                         Storyboard.TargetName="originalTransform"
                         Storyboard.TargetProperty="X"
                         From="0" To="0"
-                        Duration="0:0:0.3"/>
+                        Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
             <DoubleAnimation x:Name="SlideToLeftFrameAnim"
                         Storyboard.TargetName="frameTransform"
                         Storyboard.TargetProperty="X"
                         From="0" To="0"
-                        Duration="0:0:0.3"/>
+                        Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
         </Storyboard>
 
         <Storyboard x:Key="SlideFromLeft">
@@ -159,39 +167,20 @@
                         Storyboard.TargetName="originalTransform"  
                         Storyboard.TargetProperty="X"  
                         From="0"  To="0"  
-                        Duration="0:0:0.3"/>
+                        Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
             <DoubleAnimation x:Name="SlideFromLeftFrameAnim"
                         Storyboard.TargetName="frameTransform"
                         Storyboard.TargetProperty="X"
                         From="0" To="0"
-                        Duration="0:0:0.3"/>
-        </Storyboard>
-
-        <Storyboard x:Key="SlideToRight">
-            <DoubleAnimation x:Name="SlideToRightOriginalAnim"
-                        Storyboard.TargetName="originalTransform"
-                        Storyboard.TargetProperty="X"
-                        From="0" To="0" 
-                        Duration="0:0:0.3"/>
-            <DoubleAnimation x:Name="SlideToRightFrameAnim"
-                        Storyboard.TargetName="frameTransform"
-                        Storyboard.TargetProperty="X"
-                        From="0" To="0" 
-                        Duration="0:0:0.3"/>
-        </Storyboard>
-
-        <!-- SlideFromRight -->
-        <Storyboard x:Key="SlideFromRight">
-            <DoubleAnimation x:Name="SlideFromRightOriginalAnim"
-                        Storyboard.TargetName="originalTransform"
-                        Storyboard.TargetProperty="X"
-                        From="0" To="0" 
-                        Duration="0:0:0.3"/>
-            <DoubleAnimation x:Name="SlideFromRightFrameAnim"
-                        Storyboard.TargetName="frameTransform"
-                        Storyboard.TargetProperty="X"
-                        From="0" To="0" 
-                        Duration="0:0:0.3"/>
+                        Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
         </Storyboard>
     </Window.Resources>
 </Window>

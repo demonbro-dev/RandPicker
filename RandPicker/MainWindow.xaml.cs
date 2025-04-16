@@ -160,20 +160,11 @@ namespace RandPicker
             var slideFromLeft = (Storyboard)Resources["SlideFromLeft"];
             ((DoubleAnimation)slideFromLeft.Children[0]).From = -width;
             ((DoubleAnimation)slideFromLeft.Children[1]).To = width;
-
-            // 同理更新SlideToRight和SlideFromRight
-            var slideToRight = (Storyboard)Resources["SlideToRight"];
-            ((DoubleAnimation)slideToRight.Children[0]).To = width;
-            ((DoubleAnimation)slideToRight.Children[1]).From = -width;
-
-            var slideFromRight = (Storyboard)Resources["SlideFromRight"];
-            ((DoubleAnimation)slideFromRight.Children[0]).From = width;
-            ((DoubleAnimation)slideFromRight.Children[1]).To = -width;
         }
         private void BtnOpenNameListManager_Click(object sender, RoutedEventArgs e)
         {
             UpdateAnimations();
-            var storyboard = (Storyboard)FindResource("SlideToRight");
+            var storyboard = (Storyboard)FindResource("SlideToLeft");
             frameContainer.Visibility = Visibility.Visible;
             mainFrame.Navigate(new NameListPage());
 
@@ -194,9 +185,7 @@ namespace RandPicker
         public void PlayReturnAnimation(bool isMultiPickMode)
         {
             ShowOriginalUI();
-            var storyboard = isMultiPickMode ?
-                (Storyboard)FindResource("SlideFromLeft") :
-                (Storyboard)FindResource("SlideFromRight");
+            var storyboard = (Storyboard)FindResource("SlideFromLeft");
             storyboard.Completed += (s, _) =>
             {
                 frameContainer.Visibility = Visibility.Collapsed;
