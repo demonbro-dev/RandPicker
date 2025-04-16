@@ -166,32 +166,46 @@ namespace RandPicker
         }
         private void BtnOpenNameListManager_Click(object sender, RoutedEventArgs e)
         {
+            this.IsEnabled = false;
             UpdateAnimations();
             var storyboard = (Storyboard)FindResource("SlideToLeft");
             frameContainer.Visibility = Visibility.Visible;
             mainFrame.Navigate(new NameListPage());
-
-            storyboard.Completed += (s, _) => HideOriginalUI();
+            storyboard.Completed += (s, _) =>
+            {
+                HideOriginalUI();
+                this.IsEnabled = true;
+            };
             storyboard.Begin(this);
         }
         private void MultiPickButton_Click(object sender, RoutedEventArgs e)
         {
+            this.IsEnabled = false;
             UpdateAnimations();
             var storyboard = (Storyboard)FindResource("SlideToLeft");
             frameContainer.Visibility = Visibility.Visible; // 显示容器
             mainFrame.Navigate(new MultiPickMode(logic));
 
-            storyboard.Completed += (s, _) => HideOriginalUI();
+            storyboard.Completed += (s, _) =>
+            {
+                HideOriginalUI();
+                this.IsEnabled = true;
+            };
             storyboard.Begin(this);
         }
         private void CVPickButton_Click(object sender, RoutedEventArgs e)
         {
+            this.IsEnabled = false;
             UpdateAnimations();
             var storyboard = (Storyboard)FindResource("SlideToLeft");
             frameContainer.Visibility = Visibility.Visible;
             mainFrame.Navigate(new CVPick()); // 直接创建实例即可
 
-            storyboard.Completed += (s, _) => HideOriginalUI();
+            storyboard.Completed += (s, _) =>
+            {
+                HideOriginalUI();
+                this.IsEnabled = true;
+            };
             storyboard.Begin(this);
         }
         private void MainFrame_Navigating(object sender, NavigatingCancelEventArgs e)
@@ -204,11 +218,13 @@ namespace RandPicker
         }
         public void PlayReturnAnimation(bool isMultiPickMode = false) // 保持与原有参数兼容
         {
+            this.IsEnabled = false;
             ShowOriginalUI();
             var storyboard = (Storyboard)FindResource("SlideFromLeft");
             storyboard.Completed += (s, _) =>
             {
                 frameContainer.Visibility = Visibility.Collapsed;
+                this.IsEnabled = true;
             };
             storyboard.Begin(this);
         }
