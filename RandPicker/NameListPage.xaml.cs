@@ -104,7 +104,8 @@ namespace RandPicker
 
                     // 读取文件内容，并分割其中的名字
                     var content = File.ReadAllText(openFileDialog.FileName);
-                    var members = content.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                    var separators = new[] { ' ', '\n', '\r' };
+                    var members = content.Split(separators, StringSplitOptions.RemoveEmptyEntries)
                                         .Distinct()
                                         .ToList();
 

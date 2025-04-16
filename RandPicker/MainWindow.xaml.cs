@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 
 namespace RandPicker
 {
@@ -35,8 +36,10 @@ namespace RandPicker
                     MessageBox.Show("UI控件未正确初始化");
                     return;
                 }
+                mainFrame.Navigating += MainFrame_Navigating;
                 this.SizeChanged += MainWindow_SizeChanged; // 添加窗口大小变化事件
                 UpdateAnimations(); // 初始化动画参数
+
                 // 初始化PickerLogic
                 this.Loaded += (s, e) =>
                 {
@@ -181,8 +184,25 @@ namespace RandPicker
             storyboard.Completed += (s, _) => HideOriginalUI();
             storyboard.Begin(this);
         }
+        private void CVPickButton_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateAnimations();
+            var storyboard = (Storyboard)FindResource("SlideToLeft");
+            frameContainer.Visibility = Visibility.Visible;
+            mainFrame.Navigate(new CVPick()); // 直接创建实例即可
 
-        public void PlayReturnAnimation(bool isMultiPickMode)
+            storyboard.Completed += (s, _) => HideOriginalUI();
+            storyboard.Begin(this);
+        }
+        private void MainFrame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            // 离开页面时释放资源
+            if (mainFrame.Content is CVPick cvPick)
+            {
+                cvPick.Dispose();
+            }
+        }
+        public void PlayReturnAnimation(bool isMultiPickMode = false) // 保持与原有参数兼容
         {
             ShowOriginalUI();
             var storyboard = (Storyboard)FindResource("SlideFromLeft");
