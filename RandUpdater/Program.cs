@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
@@ -9,11 +10,21 @@ namespace RandUpdater
 {
     class Program
     {
-        static readonly HttpClient client = new HttpClient();
+        static readonly HttpClient client = CreateHttpClient();
         static readonly string versionFile = "version.txt";
         const string TARGET_ZIP_NAME = "RandPicker.zip";
 
         enum SourcePlatform { GitHub, Gitee }
+
+        static HttpClient CreateHttpClient()
+        {
+            var handler = new HttpClientHandler
+            {
+                AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
+                MaxConnectionsPerServer = 4
+            };
+            return new HttpClient(handler);
+        }
 
         static async Task Main(string[] args)
         {
@@ -22,7 +33,7 @@ namespace RandUpdater
 
             try
             {
-                Console.WriteLine("##################################\n#\n# RandUpdater V1\n# Copyright 2025 demonbro. All Rights Reserved.\n#\n##################################\n");
+                Console.WriteLine("##################################\n#\n# RandUpdater v2\n# Copyright 2025 demonbro. All Rights Reserved.\n#\n##################################\n");
 
                 var defaultRepoUrl = "https://gitee.com/demonbro-dev/RandPicker";
                 var (owner, repo, source) = ParseRepositoryUrl(defaultRepoUrl);
@@ -130,16 +141,17 @@ namespace RandUpdater
 
         static async Task DownloadAndUpdate(string downloadUrl)
         {
-            var tempFile = Path.GetTempFileName();
+            string tempFile = null;
             try
             {
-                using (var stream = await client.GetStreamAsync(downloadUrl))
-                using (var fileStream = File.Create(tempFile))
-                    await stream.CopyToAsync(fileStream);
+                bool supportsRange = await CheckRangeSupport(downloadUrl);
+                tempFile = supportsRange
+                    ? await DownloadWithMultithread(downloadUrl)
+                    : await DownloadWithSingleThread(downloadUrl);
             }
             catch
             {
-                File.Delete(tempFile);
+                if (tempFile != null && File.Exists(tempFile)) File.Delete(tempFile);
                 throw;
             }
 
@@ -161,7 +173,7 @@ namespace RandUpdater
             }
             finally
             {
-                File.Delete(tempFile);
+                if (File.Exists(tempFile)) File.Delete(tempFile);
             }
 
             if (extractSuccess && tempBackupPath != null)
@@ -174,6 +186,91 @@ namespace RandUpdater
                 {
                     File.Delete(tempBackupPath);
                 }
+            }
+        }
+
+        static async Task<bool> CheckRangeSupport(string url)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Head, url);
+            var response = await client.SendAsync(request);
+            return response.Headers.AcceptRanges.Contains("bytes");
+        }
+
+        static async Task<string> DownloadWithMultithread(string downloadUrl)
+        {
+            const int CHUNKS = 4;
+            var tempFile = Path.GetTempFileName();
+            long totalSize;
+
+            try
+            {
+                using (var response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    totalSize = response.Content.Headers.ContentLength ?? 0;
+                }
+
+                if (totalSize == 0) throw new Exception("无法获取文件大小");
+
+                using (var file = File.OpenWrite(tempFile))
+                {
+                    file.SetLength(totalSize);
+                }
+
+                var chunkSize = totalSize / CHUNKS;
+                var tasks = new List<Task>();
+
+                for (int i = 0; i < CHUNKS; i++)
+                {
+                    long start = i * chunkSize;
+                    long end = (i == CHUNKS - 1) ? totalSize - 1 : start + chunkSize - 1;
+                    tasks.Add(DownloadChunk(downloadUrl, tempFile, start, end));
+                }
+
+                await Task.WhenAll(tasks);
+                return tempFile;
+            }
+            catch
+            {
+                File.Delete(tempFile);
+                throw;
+            }
+        }
+
+        static async Task DownloadChunk(string url, string filePath, long start, long end)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(start, end);
+
+            using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Write, FileShare.Write)
+            {
+                Position = start
+            };
+
+            await stream.CopyToAsync(fileStream);
+        }
+
+        static async Task<string> DownloadWithSingleThread(string downloadUrl)
+        {
+            var tempFile = Path.GetTempFileName();
+            try
+            {
+                using var response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
+
+                using var stream = await response.Content.ReadAsStreamAsync();
+                using var fileStream = File.Create(tempFile);
+
+                await stream.CopyToAsync(fileStream, bufferSize: 512 * 1024);
+                return tempFile;
+            }
+            catch
+            {
+                File.Delete(tempFile);
+                throw;
             }
         }
 
