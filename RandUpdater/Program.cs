@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -10,6 +11,12 @@ namespace RandUpdater
 {
     class Program
     {
+        class DownloadProgress
+        {
+            public long TotalBytes;
+            public long BytesDownloaded;
+            public DateTime StartTime;
+        }
         static readonly HttpClient client = CreateHttpClient();
         static readonly string versionFile = "version.txt";
         const string TARGET_ZIP_NAME = "RandPicker.zip";
@@ -142,12 +149,13 @@ namespace RandUpdater
         static async Task DownloadAndUpdate(string downloadUrl)
         {
             string tempFile = null;
+            var progress = new DownloadProgress { StartTime = DateTime.Now };
             try
             {
                 bool supportsRange = await CheckRangeSupport(downloadUrl);
                 tempFile = supportsRange
-                    ? await DownloadWithMultithread(downloadUrl)
-                    : await DownloadWithSingleThread(downloadUrl);
+                    ? await DownloadWithMultithread(downloadUrl, progress)
+                    : await DownloadWithSingleThread(downloadUrl, progress);
             }
             catch
             {
@@ -196,7 +204,7 @@ namespace RandUpdater
             return response.Headers.AcceptRanges.Contains("bytes");
         }
 
-        static async Task<string> DownloadWithMultithread(string downloadUrl)
+        static async Task<string> DownloadWithMultithread(string downloadUrl, DownloadProgress progress)
         {
             const int CHUNKS = 4;
             var tempFile = Path.GetTempFileName();
@@ -210,6 +218,7 @@ namespace RandUpdater
                 }
 
                 if (totalSize == 0) throw new Exception("无法获取文件大小");
+                progress.TotalBytes = totalSize;
 
                 using (var file = File.OpenWrite(tempFile))
                 {
@@ -223,10 +232,14 @@ namespace RandUpdater
                 {
                     long start = i * chunkSize;
                     long end = (i == CHUNKS - 1) ? totalSize - 1 : start + chunkSize - 1;
-                    tasks.Add(DownloadChunk(downloadUrl, tempFile, start, end));
+                    tasks.Add(DownloadChunk(downloadUrl, tempFile, start, end, progress));
                 }
 
+                // 启动进度显示
+                var progressTask = DisplayProgress(progress);
                 await Task.WhenAll(tasks);
+                await progressTask; // 等待进度条完成
+
                 return tempFile;
             }
             catch
@@ -235,8 +248,7 @@ namespace RandUpdater
                 throw;
             }
         }
-
-        static async Task DownloadChunk(string url, string filePath, long start, long end)
+        static async Task DownloadChunk(string url, string filePath, long start, long end, DownloadProgress progress)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(start, end);
@@ -250,10 +262,15 @@ namespace RandUpdater
                 Position = start
             };
 
-            await stream.CopyToAsync(fileStream);
+            var buffer = new byte[512 * 1024];
+            int bytesRead;
+            while ((bytesRead = await stream.ReadAsync(buffer)) > 0)
+            {
+                await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead));
+                Interlocked.Add(ref progress.BytesDownloaded, bytesRead);
+            }
         }
-
-        static async Task<string> DownloadWithSingleThread(string downloadUrl)
+        static async Task<string> DownloadWithSingleThread(string downloadUrl, DownloadProgress progress)
         {
             var tempFile = Path.GetTempFileName();
             try
@@ -261,10 +278,24 @@ namespace RandUpdater
                 using var response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
                 response.EnsureSuccessStatusCode();
 
+                progress.TotalBytes = response.Content.Headers.ContentLength ?? 0;
+                if (progress.TotalBytes == 0) throw new Exception("无法获取文件大小");
+
                 using var stream = await response.Content.ReadAsStreamAsync();
                 using var fileStream = File.Create(tempFile);
 
-                await stream.CopyToAsync(fileStream, bufferSize: 512 * 1024);
+                // 启动进度显示
+                var progressTask = DisplayProgress(progress);
+
+                var buffer = new byte[512 * 1024];
+                int bytesRead;
+                while ((bytesRead = await stream.ReadAsync(buffer)) > 0)
+                {
+                    await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead));
+                    Interlocked.Add(ref progress.BytesDownloaded, bytesRead);
+                }
+
+                await progressTask; // 等待进度条完成
                 return tempFile;
             }
             catch
@@ -273,7 +304,6 @@ namespace RandUpdater
                 throw;
             }
         }
-
         static void UpdateVersionFile(Version version)
         {
             string versionString = version.ToString();
@@ -298,7 +328,71 @@ namespace RandUpdater
                 return new Version(0, 0);
             }
         }
-    }
 
-    record ReleaseInfo(string TagName);
+        static async Task DisplayProgress(DownloadProgress progress)
+        {
+            const int PROGRESS_WIDTH = 50;
+            var startLeft = Console.CursorLeft;
+            var startTop = Console.CursorTop;
+
+            try
+            {
+                while (progress.BytesDownloaded < progress.TotalBytes)
+                {
+                    var elapsed = DateTime.Now - progress.StartTime;
+                    var speed = progress.BytesDownloaded / elapsed.TotalSeconds;
+
+                    // 计算进度百分比
+                    var percent = (double)progress.BytesDownloaded / progress.TotalBytes;
+                    var progressBar = new StringBuilder("[");
+
+                    // 构建进度条
+                    int pos = (int)(percent * PROGRESS_WIDTH);
+                    progressBar.Append('#', pos);
+                    progressBar.Append('-', PROGRESS_WIDTH - pos);
+                    progressBar.Append($"] {percent:P1}");
+
+                    // 构建速度信息
+                    var speedInfo = $"{FormatBytes(speed)}/s | {FormatBytes(progress.TotalBytes)}";
+
+                    // 组合输出
+                    var totalWidth = Console.WindowWidth - 1;
+                    var progressLine = $"{progressBar} {speedInfo}";
+                    if (progressLine.Length > totalWidth)
+                        progressLine = progressLine.Substring(0, totalWidth);
+
+                    Console.SetCursorPosition(startLeft, startTop);
+                    Console.Write(progressLine.PadRight(totalWidth));
+
+                    await Task.Delay(100);
+                }
+
+                // 下载完成后显示完整进度条
+                var finalLine = $"[{new string('#', PROGRESS_WIDTH)}] 100% | {FormatBytes(progress.TotalBytes)}";
+                Console.SetCursorPosition(startLeft, startTop);
+                Console.Write(finalLine.PadRight(Console.WindowWidth - 1));
+                Console.WriteLine();
+            }
+            catch
+            {
+                // 防止控制台异常中断程序
+            }
+        }
+
+        // 字节格式化方法
+        static string FormatBytes(double bytes)
+        {
+            string[] units = { "B", "KB", "MB", "GB", "TB" };
+            int unitIndex = 0;
+
+            while (bytes >= 1024 && unitIndex < units.Length - 1)
+            {
+                bytes /= 1024;
+                unitIndex++;
+            }
+
+            return $"{bytes:0.##} {units[unitIndex]}";
+        }
+        record ReleaseInfo(string TagName);
+    }
 }
