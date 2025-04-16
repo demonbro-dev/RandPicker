@@ -18,6 +18,7 @@ namespace RandPicker
         private bool _isPicking;
         private Random _random = new Random();
         private readonly object _frameLock = new object();
+        private bool _isResetting;
 
         public CVPick()
         {
@@ -40,7 +41,10 @@ namespace RandPicker
             // 异步初始化摄像头
             Task.Run(() =>
             {
-                _capture = new VideoCapture(0, VideoCaptureAPIs.DSHOW);
+                if (_capture == null || !_capture.IsOpened())
+                {
+                    _capture = new VideoCapture(0, VideoCaptureAPIs.DSHOW);
+                }
                 if (!_capture.IsOpened())
                 {
                     Dispatcher.Invoke(() => MessageBox.Show("摄像头初始化失败"));
@@ -62,8 +66,7 @@ namespace RandPicker
                 {
                     using (var frameMat = _capture.RetrieveMat())
                     {
-                        if (frameMat.Empty()) continue;
-
+                        if (frameMat == null || frameMat.Empty()) continue;
                         // 转换为灰度图并增强对比度
                         using (var grayMat = new Mat())
                         {
@@ -109,10 +112,28 @@ namespace RandPicker
 
         private void PickButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_isResetting)
+            {
+                // 重置状态逻辑
+                _isPicking = false;
+                _isResetting = false;
+                PickButton.Content = "立即抽选";
+
+                // 重新启动摄像头线程
+                _isRunning = true;
+                Task.Run(() =>
+                {
+                    _processingThread = new Thread(ProcessFrames);
+                    _processingThread.Start();
+                });
+                return;
+            }
             if (!_isRunning) return;
 
             _isPicking = true;
             _isRunning = false; // 停止处理线程
+            PickButton.Content = "重置抽选状态"; // 修改按钮文本
+            _isResetting = true; // 标记为重置状态
 
             // 随机选择并保留一个白框
             var renderMat = new Mat();
@@ -147,7 +168,6 @@ namespace RandPicker
         {
             _isRunning = false;
             _processingThread?.Join(500);
-            _capture?.Release();
             _faceCascade?.Dispose();
         }
 
