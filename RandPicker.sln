@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandPicker", "RandPicker\Ra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandUpdater", "RandUpdater\RandUpdater.csproj", "{92D16FF0-5AD8-1919-ADAC-E8AA607D5F46}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demonbro.UniLibs", "demonbro.UniLibs\demonbro.UniLibs.csproj", "{9C2EB85E-4541-4F23-AB30-33D660C2EE21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{92D16FF0-5AD8-1919-ADAC-E8AA607D5F46}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92D16FF0-5AD8-1919-ADAC-E8AA607D5F46}.Release|x64.ActiveCfg = Release|Any CPU
 		{92D16FF0-5AD8-1919-ADAC-E8AA607D5F46}.Release|x64.Build.0 = Release|Any CPU
+		{9C2EB85E-4541-4F23-AB30-33D660C2EE21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C2EB85E-4541-4F23-AB30-33D660C2EE21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C2EB85E-4541-4F23-AB30-33D660C2EE21}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9C2EB85E-4541-4F23-AB30-33D660C2EE21}.Debug|x64.Build.0 = Debug|Any CPU
+		{9C2EB85E-4541-4F23-AB30-33D660C2EE21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C2EB85E-4541-4F23-AB30-33D660C2EE21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C2EB85E-4541-4F23-AB30-33D660C2EE21}.Release|x64.ActiveCfg = Release|Any CPU
+		{9C2EB85E-4541-4F23-AB30-33D660C2EE21}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

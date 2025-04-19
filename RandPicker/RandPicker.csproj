@@ -38,4 +38,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\demonbro.UniLibs\demonbro.UniLibs.csproj" />
+  </ItemGroup>
+
 </Project>
