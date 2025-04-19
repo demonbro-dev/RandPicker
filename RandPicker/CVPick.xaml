@@ -26,5 +26,12 @@
                 HorizontalAlignment="Left" VerticalAlignment="Bottom" hc:IconElement.Geometry="{StaticResource LeftGeometry}"
                 Margin="10" Padding="15,5" Click="BackButton_Click"
                 Grid.Row="1"/>
+
+        <ComboBox x:Name="CameraComboBox" IsEnabled="{Binding Items.Count, RelativeSource={RelativeSource Self}}"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Bottom"
+              Margin="10" Width="200"
+              SelectionChanged="CameraComboBox_SelectionChanged"
+              Grid.Row="1"/>
     </Grid>
 </UserControl>
