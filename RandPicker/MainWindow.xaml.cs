@@ -66,12 +66,7 @@ namespace RandPicker
                 topMostCheckBox.Unchecked += TopMostCheckBox_Unchecked;
 
                 this.Closed += (s, e) => logic.Cleanup();
-            };
-            mainFrame.Navigated += (s, e) =>
-            {
-                // 如果导航到非NameListPage，恢复原界面
-                if (e.Content is not NameListPage)
-                    ShowOriginalUI();
+                this.Closing += MainWindow_Closing;
             };
         }
 
@@ -211,6 +206,14 @@ namespace RandPicker
         private void MainFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             // 离开页面时释放资源
+            if (mainFrame.Content is CVPick cvPick)
+            {
+                cvPick.Dispose();
+            }
+        }
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // 释放当前活动页面中的CVPick
             if (mainFrame.Content is CVPick cvPick)
             {
                 cvPick.Dispose();

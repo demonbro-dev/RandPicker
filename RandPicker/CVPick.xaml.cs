@@ -41,20 +41,22 @@ namespace RandPicker
             // 异步初始化摄像头
             Task.Run(() =>
             {
-                if (_capture == null || !_capture.IsOpened())
+                try
                 {
                     _capture = new VideoCapture(0, VideoCaptureAPIs.DSHOW);
+                    if (!_capture.IsOpened())
+                    {
+                        Dispatcher.Invoke(() => MessageBox.Show("摄像头初始化失败"));
+                        return;
+                    }
+                    _isRunning = true;
+                    _processingThread = new Thread(ProcessFrames);
+                    _processingThread.Start();
                 }
-                if (!_capture.IsOpened())
+                catch
                 {
-                    Dispatcher.Invoke(() => MessageBox.Show("摄像头初始化失败"));
-                    return;
+                    _capture?.Dispose();
                 }
-
-                // 启动处理线程
-                _isRunning = true;
-                _processingThread = new Thread(ProcessFrames);
-                _processingThread.Start();
             });
         }
 
@@ -169,6 +171,9 @@ namespace RandPicker
             _isRunning = false;
             _processingThread?.Join(500);
             _faceCascade?.Dispose();
+            _capture?.Release();
+            _capture?.Dispose();
+            _capture = null;
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) => Dispose();
