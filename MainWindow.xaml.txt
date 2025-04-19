@@ -218,8 +218,7 @@ namespace RandPicker
         }
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
-            var settingsWindow = new Settings(configPath)
+            var settingsWindow = new Settings
             {
                 Owner = this,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
