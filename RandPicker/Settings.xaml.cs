@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ComboBox = System.Windows.Controls.ComboBox;
+using MessageBox = System.Windows.MessageBox;
 using TextBox = System.Windows.Controls.TextBox;
 using Window = System.Windows.Window;
 
@@ -33,11 +34,22 @@ namespace RandPicker
                 switch (selectedCategory)
                 {
                     case "界面设置":
-                        AddSettingItem("主题颜色", new ComboBox { ItemsSource = new[] { "浅色", "深色" } });
-                        AddSettingItem("字体大小", new Slider { Minimum = 12, Maximum = 24, Value = 14 });
-                        // 添加边框颜色设置项
-                        _borderColorTextBox = new TextBox { Text = _config.BorderColor };
-                        AddSettingItem("边框颜色", _borderColorTextBox);
+                        var colorPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                        _borderColorTextBox = new TextBox { Text = _config.BorderColor, Width = 100 };
+                        var colorPreview = new Button
+                        {
+                            Content = "■",
+                            Foreground = new SolidColorBrush(UniLibsAdapter.FromHex(_config.BorderColor)),
+                            Width = 50,
+                            FontSize = 14,
+                            Margin = new Thickness(5, 0, 0, 0)
+                        };
+                        colorPreview.Click += ColorPreview_Click;
+
+                        colorPanel.Children.Add(_borderColorTextBox);
+                        colorPanel.Children.Add(colorPreview);
+
+                        AddSettingItem("边框颜色", colorPanel);
                         break;
                     case "抽选设置":
                         break;
@@ -46,9 +58,49 @@ namespace RandPicker
                 }
             }
         }
+        private void ColorPreview_Click(object sender, RoutedEventArgs e)
+        {
+            var picker = new ColorPickerWindow(_borderColorTextBox.Text)
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            if (picker.ShowDialog() == true)
+            {
+                _borderColorTextBox.Text = picker.SelectedColor;
+                if (sender is Button btn)
+                {
+                    btn.Foreground = new SolidColorBrush(ParseColor(picker.SelectedColor));
+                }
+            }
+        }
+
+        private Color ParseColor(string hex)
+        {
+            try
+            {
+                return (Color)ColorConverter.ConvertFromString(hex);
+            }
+            catch
+            {
+                return Colors.Black;
+            }
+        }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+            try
+            {
+                var color = ParseColor(_borderColorTextBox.Text);
+                _config.BorderColor = $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+            }
+            catch
+            {
+                MessageBox.Show("颜色格式无效，请使用#RRGGBB格式");
+                e.Cancel = true;
+                return;
+            }
             // 保存配置
             _config.BorderColor = _borderColorTextBox.Text;
             ConfigurationManager.SaveConfig(_config, _configPath);
@@ -72,8 +124,8 @@ namespace RandPicker
             panel.Children.Add(new TextBlock
             {
                 Text = title,
-                Width = 490,
-                MinWidth = 490,
+                Width = 410,
+                MinWidth = 410,
                 VerticalAlignment = VerticalAlignment.Center,
                 Style = Application.Current.FindResource("SettingTitleStyle") as Style
             });
