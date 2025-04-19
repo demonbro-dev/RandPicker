@@ -18,3 +18,6 @@ RandPicker具有多种便于使用的功能，具体如下：
 
 ## 许可证
 [MIT License](https://github.com/demonbro-dev/RandPicker/blob/master/LICENSE.txt)
+
+## .NET Framework 构建版本
+[RandPickerF](https://github.com/demonbro-dev/RandPickerF)
