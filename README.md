@@ -1,6 +1,6 @@
 ![RandPickerLogo](/RandPicker/RandPickerLogo.ico) 
 # **RandPicker**
- 
+ [查看.NET Framework构建版本](https://github.com/demonbro-dev/RandPickerF)
 ## 这是什么？
 RandPicker是一个简易名称抽选器，其基于WPF用户界面框架，采用C#实现底层逻辑，高效而美观。
 
@@ -19,5 +19,3 @@ RandPicker具有多种便于使用的功能，具体如下：
 ## 许可证
 [MIT License](https://github.com/demonbro-dev/RandPicker/blob/master/LICENSE.txt)
 
-## .NET Framework 构建版本
-[RandPickerF](https://github.com/demonbro-dev/RandPickerF)
