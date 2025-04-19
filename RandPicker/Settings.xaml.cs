@@ -10,12 +10,14 @@ namespace RandPicker
 {
     using demonbro.UniLibs; // 添加命名空间引用
     using System.Windows.Media;
+    using static demonbro.UniLibs.AppConfig;
 
     public partial class Settings : Window
     {
         private string _configPath;
         private AppConfig _config;
         private TextBox _borderColorTextBox;
+        private ComboBox _defaultPageComboBox;
 
         public Settings(string configPath)
         {
@@ -50,6 +52,13 @@ namespace RandPicker
                         colorPanel.Children.Add(colorPreview);
 
                         AddSettingItem("边框颜色", colorPanel);
+
+                        _defaultPageComboBox = new ComboBox
+                        {
+                            ItemsSource = new[] { "主页面", "多抽选模式" },
+                            SelectedIndex = (int)_config.DefaultPage
+                        };
+                        AddSettingItem("默认页面", _defaultPageComboBox);
                         break;
                     case "抽选设置":
                         break;
@@ -101,6 +110,7 @@ namespace RandPicker
                 e.Cancel = true;
                 return;
             }
+            _config.DefaultPage = (DefaultPageMode)_defaultPageComboBox.SelectedIndex;
             // 保存配置
             _config.BorderColor = _borderColorTextBox.Text;
             ConfigurationManager.SaveConfig(_config, _configPath);
@@ -115,7 +125,6 @@ namespace RandPicker
                 }
                 catch { /* 忽略无效颜色值 */ }
             }
-
             base.OnClosing(e);
         }
         private void AddSettingItem(string title, FrameworkElement control)

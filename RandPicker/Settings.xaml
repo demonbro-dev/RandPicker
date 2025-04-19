@@ -1,7 +1,7 @@
 ﻿<Window x:Class="RandPicker.Settings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:system="clr-namespace:System;assembly=netstandard"
-        Title="RandPicker 设置" Height="500" Width="800" MinHeight="500" MinWidth="800"
+        Title="RandPicker 设置" Height="500" Width="800" MinHeight="500" MinWidth="800" ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         Background="#FFF0F0F0">
     <Grid>
