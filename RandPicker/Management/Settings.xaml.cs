@@ -1,10 +1,5 @@
-﻿using HandyControl.Controls;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using ComboBox = System.Windows.Controls.ComboBox;
-using MessageBox = System.Windows.MessageBox;
-using TextBox = System.Windows.Controls.TextBox;
-using Window = System.Windows.Window;
 
 namespace RandPicker.Management
 {

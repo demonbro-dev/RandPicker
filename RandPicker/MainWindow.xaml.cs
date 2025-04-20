@@ -3,17 +3,15 @@
 // MainWindow.xaml.cs : RandPicker 程序主页面后台实现
 //
 //
-using demonbro.UniLibs;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
-using static demonbro.UniLibs.AppConfig;
 using System.Windows.Threading;
+using demonbro.UniLibs;
 using RandPicker.Modes;
 using RandPicker.Management;
 
@@ -88,7 +86,7 @@ namespace RandPicker
             var config = ConfigurationManager.LoadConfig(configPath)
                            .WithWpfAdaptations();
             BorderColor = new SolidColorBrush(UniLibsAdapter.FromHex(config.BorderColor));
-            if (config.DefaultPage == DefaultPageMode.MultiPick)
+            if (config.DefaultPage == AppConfig.DefaultPageMode.MultiPick)
             {
                 Dispatcher.BeginInvoke((Action)(() =>
                 {
