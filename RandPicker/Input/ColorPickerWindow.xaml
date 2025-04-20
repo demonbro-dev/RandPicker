@@ -1,4 +1,4 @@
-﻿<Window x:Class="RandPicker.ColorPickerWindow"
+﻿<Window x:Class="RandPicker.Input.ColorPickerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="选择颜色" Height="200" Width="400" WindowStartupLocation="CenterOwner">

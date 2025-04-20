@@ -7,10 +7,10 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
-using NameListManager;
+using RandPicker.Input;
 using Newtonsoft.Json;
 
-namespace RandPicker
+namespace RandPicker.Management
 {
     public partial class NameListPage : UserControl
     {

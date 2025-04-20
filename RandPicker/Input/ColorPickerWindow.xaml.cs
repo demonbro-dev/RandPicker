@@ -5,7 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace RandPicker
+namespace RandPicker.Input
 {
     public partial class ColorPickerWindow : Window
     {

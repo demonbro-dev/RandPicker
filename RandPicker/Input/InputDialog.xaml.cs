@@ -5,7 +5,7 @@
 //
 using System.Windows;
 
-namespace NameListManager
+namespace RandPicker.Input
 {
     public partial class InputDialog : Window
     {

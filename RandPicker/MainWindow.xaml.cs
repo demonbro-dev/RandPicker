@@ -14,6 +14,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using static demonbro.UniLibs.AppConfig;
 using System.Windows.Threading;
+using RandPicker.Modes;
+using RandPicker.Management;
 
 namespace RandPicker
 {
@@ -39,7 +41,7 @@ namespace RandPicker
             InitializeComponent();
             {
                 if (nameLabel == null || startButton == null ||
-        topMostCheckBox == null || listComboBox == null)
+                    topMostCheckBox == null || listComboBox == null)
                 {
                     MessageBox.Show("UI控件未正确初始化");
                     return;
@@ -47,20 +49,7 @@ namespace RandPicker
                 mainFrame.Navigating += MainFrame_Navigating;
                 this.SizeChanged += MainWindow_SizeChanged; // 添加窗口大小变化事件
                 UpdateAnimations(); // 初始化动画参数
-
-                var configPath = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "config.json");
-                var config = ConfigurationManager.LoadConfig(configPath)
-                               .WithWpfAdaptations();
-                BorderColor = new SolidColorBrush(UniLibsAdapter.FromHex(config.BorderColor));
-                if (config.DefaultPage == DefaultPageMode.MultiPick)
-                {
-                    Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        MultiPickButton_Click(null, null);
-                    }), DispatcherPriority.Loaded);
-                }
+                LoadConfig();
 
                 // 初始化PickerLogic
                 this.Loaded += (s, e) =>
@@ -90,6 +79,22 @@ namespace RandPicker
                 this.Closed += (s, e) => logic.Cleanup();
                 this.Closing += MainWindow_Closing;
             };
+        }
+        public void LoadConfig()
+        {
+            var configPath = Path.Combine(
+                            AppDomain.CurrentDomain.BaseDirectory,
+                            "config.json");
+            var config = ConfigurationManager.LoadConfig(configPath)
+                           .WithWpfAdaptations();
+            BorderColor = new SolidColorBrush(UniLibsAdapter.FromHex(config.BorderColor));
+            if (config.DefaultPage == DefaultPageMode.MultiPick)
+            {
+                Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    MultiPickButton_Click(null, null);
+                }), DispatcherPriority.Loaded);
+            }
         }
 
         private bool _isSubMenuOpen = false;

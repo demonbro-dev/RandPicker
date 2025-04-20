@@ -3,13 +3,17 @@
 // MultiPickMode.xaml.cs : RandPicker 多抽选模式页面后台实现
 //
 //
+using demonbro.UniLibs;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
+using System.Xml;
 
-namespace RandPicker
+namespace RandPicker.Modes
 {
     public partial class MultiPickMode : Page
     {
@@ -26,6 +30,7 @@ namespace RandPicker
             InitializeComponent();
             _logic = logic;
             resultItemsControl.ItemsSource = _results;
+            SetBorderColor();
             InitializeTimer();
             _currentListName = _logic.CurrentList;
         }
@@ -93,6 +98,16 @@ namespace RandPicker
                 }
             };
         }
+        private void SetBorderColor()
+        {
+            var configPath = Path.Combine(
+                            AppDomain.CurrentDomain.BaseDirectory,
+                            "config.json");
+            var config = ConfigurationManager.LoadConfig(configPath)
+                           .WithWpfAdaptations();
+            BorderMultiPick.BorderBrush = new SolidColorBrush(UniLibsAdapter.FromHex(config.BorderColor));
+        }
+
         private void StartMultiButton_Click(object sender, RoutedEventArgs e)
         {
             if (_isRunning)

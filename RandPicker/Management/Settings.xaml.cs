@@ -6,9 +6,10 @@ using MessageBox = System.Windows.MessageBox;
 using TextBox = System.Windows.Controls.TextBox;
 using Window = System.Windows.Window;
 
-namespace RandPicker
+namespace RandPicker.Management
 {
-    using demonbro.UniLibs; // 添加命名空间引用
+    using demonbro.UniLibs;
+    using RandPicker.Input;
     using System.Windows.Media;
     using static demonbro.UniLibs.AppConfig;
 
@@ -44,7 +45,8 @@ namespace RandPicker
                             Foreground = new SolidColorBrush(UniLibsAdapter.FromHex(_config.BorderColor)),
                             Width = 50,
                             FontSize = 14,
-                            Margin = new Thickness(5, 0, 0, 0)
+                            Margin = new Thickness(5, 0, 0, 0),
+                            ToolTip = "点击打开颜色选单"
                         };
                         colorPreview.Click += ColorPreview_Click;
 
@@ -56,9 +58,10 @@ namespace RandPicker
                         _defaultPageComboBox = new ComboBox
                         {
                             ItemsSource = new[] { "主页面", "多抽选模式" },
-                            SelectedIndex = (int)_config.DefaultPage
+                            SelectedIndex = (int)_config.DefaultPage,
+                            Width = 150
                         };
-                        AddSettingItem("默认页面", _defaultPageComboBox);
+                        AddSettingItem("启动时默认页面", _defaultPageComboBox);
                         break;
                     case "抽选设置":
                         break;

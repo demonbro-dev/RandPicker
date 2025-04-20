@@ -1,4 +1,4 @@
-﻿<Page x:Class="RandPicker.MultiPickMode"
+﻿<Page x:Class="RandPicker.Modes.MultiPickMode"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,7 +19,7 @@
                    HorizontalAlignment="Center" Margin="20"
                    FontSize="24" FontWeight="Bold"/>
 
-        <Border Grid.Row="1" Margin="20,10" CornerRadius="15" Padding="20"
+        <Border x:Name="BorderMultiPick" Grid.Row="1" Margin="20,10" CornerRadius="15" Padding="20"
         Background="#1AAAAAAA" BorderBrush="#63B8FF" BorderThickness="2"
         MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}">
 

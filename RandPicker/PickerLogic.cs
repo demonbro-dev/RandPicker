@@ -8,7 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using demonbro.UniLibs;
 using Newtonsoft.Json;
+using static demonbro.UniLibs.AppConfig;
 using ComboBox = System.Windows.Controls.ComboBox;
 using Window = System.Windows.Window;
 
@@ -31,7 +33,7 @@ namespace RandPicker
         protected DispatcherTimer timer;
         protected Random random;
 
-        public PickerLogic(Window window, TextBlock nameLabel, Button startButton, CheckBox topMostCheckBox, ComboBox? listComboBox = null)
+        public PickerLogic(Window window, TextBlock nameLabel, Button startButton, CheckBox topMostCheckBox, ComboBox? listComboBox = null, Brush borderColor = null)
         {
             // 空值检查
             this.window = window ?? throw new ArgumentNullException(nameof(window));
@@ -78,6 +80,15 @@ namespace RandPicker
         private class RootObject
         {
             public List<NameList> name_lists { get; set; }
+        }
+        private void SetFontColor()
+        {
+            var configPath = Path.Combine(
+                            AppDomain.CurrentDomain.BaseDirectory,
+                            "config.json");
+            var config = ConfigurationManager.LoadConfig(configPath)
+                           .WithWpfAdaptations();
+            nameLabel.Foreground = new SolidColorBrush(UniLibsAdapter.FromHex(config.BorderColor));
         }
 
         private void LoadListData()
@@ -186,7 +197,7 @@ namespace RandPicker
         {
             timer.Stop();
             startButton.Content = "开始抽选";
-            nameLabel.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString("#63B8FF");
+            SetFontColor();
             nameLabel.FontWeight = FontWeights.Bold;
             _lastStoppedName = CurrentDisplayText;
         }

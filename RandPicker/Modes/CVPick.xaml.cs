@@ -8,7 +8,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace RandPicker
+namespace RandPicker.Modes
 {
     public partial class CVPick : UserControl, IDisposable
     {

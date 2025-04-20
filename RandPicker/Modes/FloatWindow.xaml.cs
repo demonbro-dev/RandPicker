@@ -6,7 +6,7 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace RandPicker
+namespace RandPicker.Modes
 {
     public partial class FloatWindow : Window
     {
