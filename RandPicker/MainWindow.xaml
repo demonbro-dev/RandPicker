@@ -51,10 +51,17 @@
             <Button x:Name="startButton" Content="开始抽选" 
                     MinWidth="120" MinHeight="40" Margin="5" 
                 HorizontalAlignment="Center"/>
-            <CheckBox x:Name="topMostCheckBox" Content="浮动小窗模式" 
+            <StackPanel Grid.Row="2" Orientation="Vertical" 
+                            HorizontalAlignment="Center" Margin="10">
+                <CheckBox x:Name="topMostCheckBox" Content="浮动小窗模式" 
                     Margin="5" VerticalAlignment="Center" HorizontalAlignment="Right"
                     Checked="TopMostCheckBox_Checked" Unchecked="TopMostCheckBox_Unchecked"/>
-        </StackPanel>
+                <CheckBox x:Name="topmostCheckBox" Content="置于顶层" 
+                    Margin="5" VerticalAlignment="Center"
+                    Checked="TopmostCheckBox_Checked" 
+                    Unchecked="TopmostCheckBox_Unchecked"/>
+            </StackPanel>
+         </StackPanel>
 
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>

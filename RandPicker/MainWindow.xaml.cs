@@ -328,7 +328,17 @@ namespace RandPicker
         {
             this.Topmost = false;
         }
+        private void TopmostCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            this.Topmost = true; // 主窗口置顶
+            topMostCheckBox.IsEnabled = false; // 禁用“浮动小窗模式”
+        }
 
+        private void TopmostCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.Topmost = false; // 取消置顶
+            topMostCheckBox.IsEnabled = true; // 启用“浮动小窗模式”
+        }
         // 列表选择变更事件
         private void ListComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
