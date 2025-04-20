@@ -12,22 +12,22 @@ namespace RandPicker
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+            base.OnStartup(e);
+
+            string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
             var config = demonbro.UniLibs.ConfigurationManager.LoadConfig(configPath);
 
+            // 检查加密状态与密钥是否匹配
             if (config.UseRSAEncryption)
             {
-                var keyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "private.pem");
-                if (!File.Exists(keyPath))
+                string privateKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "private.pem");
+                if (!File.Exists(privateKeyPath))
                 {
-                    MessageBox.Show("加密功能已启用但未找到密钥文件，请先生成密钥");
+                    MessageBox.Show("加密已启用但缺少私钥，已强制关闭加密功能");
                     config.UseRSAEncryption = false;
                     demonbro.UniLibs.ConfigurationManager.SaveConfig(config, configPath);
                 }
             }
-
-            base.OnStartup(e);
         }
     }
-
 }

@@ -10,6 +10,7 @@ namespace RandPicker.Management
     using System.IO;
     using System.Windows.Media;
     using static demonbro.UniLibs.AppConfig;
+    using Newtonsoft.Json;
 
     public partial class Settings : Window
     {
@@ -18,6 +19,7 @@ namespace RandPicker.Management
         private TextBox _borderColorTextBox;
         private ComboBox _defaultPageComboBox;
         private CheckBox _rsaEncryptCheckBox;
+        public PickerLogic PickerLogic { get; set; }
 
         public Settings(string configPath)
         {
@@ -79,7 +81,15 @@ namespace RandPicker.Management
                             Content = "生成新密钥",
                             Margin = new Thickness(5, 0, 0, 0)
                         };
-                        keyGenButton.Click += KeyGenButton_Click;
+                        if (_rsaEncryptCheckBox.IsChecked == true)
+                        {
+                            keyGenButton.IsEnabled = false;
+                        }
+                        else 
+                        {
+                            keyGenButton.IsEnabled = true;
+                        }
+                            keyGenButton.Click += KeyGenButton_Click;
                         AddSettingItem("密钥管理", keyGenButton);
                         break;
                 }
@@ -118,6 +128,7 @@ namespace RandPicker.Management
         {
             try
             {
+                // 生成新密钥对
                 var (publicKey, privateKey) = GenerateRSAKey.Generate(4096);
                 File.WriteAllText("private.pem", privateKey);
                 File.WriteAllText("public.pem", publicKey);
@@ -125,38 +136,89 @@ namespace RandPicker.Management
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"生成密钥失败：{ex.Message}");
+                MessageBox.Show($"操作失败：{ex.Message}");
             }
         }
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+            bool originalEncryptionState = _config.UseRSAEncryption;
+            bool newEncryptionState = _rsaEncryptCheckBox.IsChecked ?? false;
+
             try
             {
-                var color = ParseColor(_borderColorTextBox.Text);
-                _config.BorderColor = $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+                // 保存配置（包含加密状态）
+                _config.UseRSAEncryption = newEncryptionState;
+                _config.DefaultPage = (DefaultPageMode)_defaultPageComboBox.SelectedIndex;
+                ConfigurationManager.SaveConfig(_config, _configPath);
+
+                // 如果加密状态发生改变，触发文件格式转换
+                if (originalEncryptionState != newEncryptionState)
+                {
+                    string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "namelist.json");
+                    string backupPath = jsonPath + ".bak";
+
+                    // 备份原文件
+                    File.Copy(jsonPath, backupPath, true);
+
+                    try
+                    {
+                        string data;
+                        if (File.Exists(jsonPath))
+                        {
+                            // 根据旧状态读取数据
+                            if (originalEncryptionState)
+                            {
+                                var privateKey = File.ReadAllText("private.pem");
+                                data = RSAKeyProcessor.Decrypt(File.ReadAllText(jsonPath), privateKey);
+                            }
+                            else
+                            {
+                                data = File.ReadAllText(jsonPath);
+                            }
+
+                            // 根据新状态写入数据
+                            if (newEncryptionState)
+                            {
+                                var publicKey = File.ReadAllText("public.pem");
+                                string encrypted = RSAKeyProcessor.Encrypt(data, publicKey);
+                                File.WriteAllText(jsonPath, encrypted);
+                            }
+                            else
+                            {
+                                File.WriteAllText(jsonPath, data);
+                            }
+
+                            File.Delete(backupPath); // 成功后删除备份
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // 恢复备份并提示错误
+                        File.Copy(backupPath, jsonPath, true);
+                        MessageBox.Show($"加密状态切换失败：{ex.Message}\n已恢复原文件", "错误");
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+
+                // 更新主窗口边框颜色（原有逻辑）
+                if (Owner is MainWindow mainWindow)
+                {
+                    try
+                    {
+                        var color = UniLibsAdapter.FromHex(_config.BorderColor);
+                        mainWindow.BorderColor = new SolidColorBrush(color);
+                    }
+                    catch { /* 忽略无效颜色值 */ }
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("颜色格式无效，请使用#RRGGBB格式");
+                MessageBox.Show($"保存配置失败：{ex.Message}");
                 e.Cancel = true;
                 return;
             }
-            _config.DefaultPage = (DefaultPageMode)_defaultPageComboBox.SelectedIndex;
-            // 保存配置
-            _config.BorderColor = _borderColorTextBox.Text;
-            _config.UseRSAEncryption = _rsaEncryptCheckBox.IsChecked ?? false;
-            ConfigurationManager.SaveConfig(_config, _configPath);
 
-            // 更新主窗口边框颜色
-            if (Owner is MainWindow mainWindow)
-            {
-                try
-                {
-                    var color = UniLibsAdapter.FromHex(_config.BorderColor);
-                    mainWindow.BorderColor = new SolidColorBrush(color);
-                }
-                catch { /* 忽略无效颜色值 */ }
-            }
             base.OnClosing(e);
         }
         private void AddSettingItem(string title, FrameworkElement control)

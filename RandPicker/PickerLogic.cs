@@ -19,6 +19,7 @@ namespace RandPicker
     public class PickerLogic
     {
         public string CurrentDisplayText { get; set; } = "点击开始";
+        public Dictionary<string, List<string>> GetCurrentLists() => lists;
         private ComboBox? listComboBox;
         private string _lastStoppedName = string.Empty;
 
@@ -55,28 +56,36 @@ namespace RandPicker
             InitializeTimer();
             BindEvents();
         }
-        private void CreateDefaultNamelist(string filePath) //创建默认namelist的方法
+
+        private void CreateDefaultNamelist(string filePath)
         {
             var initialData = new RootObject
             {
                 name_lists = new List<NameList>
         {
-            new NameList
-            {
-                name = "列表1",
-                members = new List<string> { "1", "2", "3", "4", "5" }
-            },
-            new NameList
-            {
-                name = "列表2",
-                members = new List<string> { "6", "7", "8", "9", "10" }
-            }
+            new NameList { name = "列表1", members = new List<string> { "1", "2", "3" } },
+            new NameList { name = "列表2", members = new List<string> { "4", "5", "6" } }
         }
             };
 
             var json = JsonConvert.SerializeObject(initialData, Formatting.Indented);
-            File.WriteAllText(filePath, json);
+            var config = ConfigurationManager.LoadConfig("config.json");
+
+            if (config.UseRSAEncryption)
+            {
+                string publicKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "public.pem");
+                if (!File.Exists(publicKeyPath))
+                    throw new FileNotFoundException("公钥文件未找到");
+
+                string encrypted = RSAKeyProcessor.Encrypt(json, File.ReadAllText(publicKeyPath));
+                File.WriteAllText(filePath, encrypted);
+            }
+            else
+            {
+                File.WriteAllText(filePath, json);
+            }
         }
+
         private class RootObject
         {
             public List<NameList> name_lists { get; set; }
@@ -168,24 +177,23 @@ namespace RandPicker
 
             try
             {
-                var json = JsonConvert.SerializeObject(new RootObject
+                var root = new RootObject
                 {
                     name_lists = lists.Select(kv => new NameList
                     {
                         name = kv.Key,
                         members = kv.Value
                     }).ToList()
-                }, Formatting.Indented);
+                };
+                string json = JsonConvert.SerializeObject(root, Formatting.Indented);
 
                 if (config.UseRSAEncryption)
                 {
-                    var publicKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "public.pem");
+                    string publicKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "public.pem");
                     if (!File.Exists(publicKeyPath))
-                    {
-                        throw new FileNotFoundException("找不到公钥文件");
-                    }
+                        throw new FileNotFoundException("公钥文件未找到");
 
-                    var encrypted = RSAKeyProcessor.Encrypt(json, File.ReadAllText(publicKeyPath));
+                    string encrypted = RSAKeyProcessor.Encrypt(json, File.ReadAllText(publicKeyPath));
                     File.WriteAllText(jsonPath, encrypted);
                 }
                 else
@@ -195,7 +203,7 @@ namespace RandPicker
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"保存失败：{ex.Message}");
+                MessageBox.Show($"保存名单失败：{ex.Message}");
             }
         }
 

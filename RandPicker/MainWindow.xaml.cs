@@ -97,6 +97,8 @@ namespace RandPicker
 
         private bool _isSubMenuOpen = false;
         private bool _isAnimating = false;
+        private PickerLogic _pickerLogic;
+
         private void SubMenuButton_Click(object sender, RoutedEventArgs e)
         {
             if (_isAnimating) return;
