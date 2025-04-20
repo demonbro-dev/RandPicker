@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using demonbro.UniLibs;
 using Newtonsoft.Json;
-using static demonbro.UniLibs.AppConfig;
+using demonbro.UniLibs.Cryptography;
 using ComboBox = System.Windows.Controls.ComboBox;
 using Window = System.Windows.Window;
 
@@ -94,6 +94,8 @@ namespace RandPicker
         private void LoadListData()
         {
             var jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "namelist.json");
+            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+            var config = ConfigurationManager.LoadConfig(configPath);
 
             try
             {
@@ -104,7 +106,22 @@ namespace RandPicker
                     MessageBox.Show("未找到namelist.json，已创建初始名单文件", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
 
-                var jsonData = File.ReadAllText(jsonPath);
+                string jsonData;
+                if (config.UseRSAEncryption)
+                {
+                    var privateKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "private.pem");
+                    if (!File.Exists(privateKeyPath))
+                    {
+                        throw new FileNotFoundException("找不到私钥文件");
+                    }
+
+                    var encryptedData = File.ReadAllText(jsonPath);
+                    jsonData = RSAKeyProcessor.Decrypt(encryptedData, File.ReadAllText(privateKeyPath));
+                }
+                else
+                {
+                    jsonData = File.ReadAllText(jsonPath);
+                }
                 var wrapper = JsonConvert.DeserializeObject<NamelistWrapper>(jsonData);
                 lists = wrapper.NameLists.ToDictionary(d => d.Name, d => d.Members);
 
@@ -143,6 +160,45 @@ namespace RandPicker
                 lists = new Dictionary<string, List<string>>();
             }
         }
+        public void SaveListData()
+        {
+            var jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "namelist.json");
+            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+            var config = ConfigurationManager.LoadConfig(configPath);
+
+            try
+            {
+                var json = JsonConvert.SerializeObject(new RootObject
+                {
+                    name_lists = lists.Select(kv => new NameList
+                    {
+                        name = kv.Key,
+                        members = kv.Value
+                    }).ToList()
+                }, Formatting.Indented);
+
+                if (config.UseRSAEncryption)
+                {
+                    var publicKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "public.pem");
+                    if (!File.Exists(publicKeyPath))
+                    {
+                        throw new FileNotFoundException("找不到公钥文件");
+                    }
+
+                    var encrypted = RSAKeyProcessor.Encrypt(json, File.ReadAllText(publicKeyPath));
+                    File.WriteAllText(jsonPath, encrypted);
+                }
+                else
+                {
+                    File.WriteAllText(jsonPath, json);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"保存失败：{ex.Message}");
+            }
+        }
+
         public void ReloadLists()
         {
             // 重新加载namelist.json数据并更新列表的方法

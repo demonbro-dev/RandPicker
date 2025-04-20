@@ -4,7 +4,10 @@ using System.Windows.Controls;
 namespace RandPicker.Management
 {
     using demonbro.UniLibs;
+    using demonbro.UniLibs.Cryptography;
     using RandPicker.Input;
+    using RandPicker;
+    using System.IO;
     using System.Windows.Media;
     using static demonbro.UniLibs.AppConfig;
 
@@ -14,6 +17,7 @@ namespace RandPicker.Management
         private AppConfig _config;
         private TextBox _borderColorTextBox;
         private ComboBox _defaultPageComboBox;
+        private CheckBox _rsaEncryptCheckBox;
 
         public Settings(string configPath)
         {
@@ -61,6 +65,22 @@ namespace RandPicker.Management
                     case "抽选设置":
                         break;
                     case "RandPicker Labs":
+                        _rsaEncryptCheckBox = new CheckBox
+                        {
+                            IsChecked = _config.UseRSAEncryption,
+                            Content = "启用RSA4096加密",
+                            VerticalAlignment = VerticalAlignment.Center
+                        };
+                        AddSettingItem("名单加密", _rsaEncryptCheckBox);
+
+                        // 添加密钥生成按钮
+                        var keyGenButton = new Button
+                        {
+                            Content = "生成新密钥",
+                            Margin = new Thickness(5, 0, 0, 0)
+                        };
+                        keyGenButton.Click += KeyGenButton_Click;
+                        AddSettingItem("密钥管理", keyGenButton);
                         break;
                 }
             }
@@ -94,7 +114,20 @@ namespace RandPicker.Management
                 return Colors.Black;
             }
         }
-
+        private void KeyGenButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var (publicKey, privateKey) = GenerateRSAKey.Generate(4096);
+                File.WriteAllText("private.pem", privateKey);
+                File.WriteAllText("public.pem", publicKey);
+                MessageBox.Show("已生成新的RSA密钥对");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"生成密钥失败：{ex.Message}");
+            }
+        }
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             try
@@ -111,6 +144,7 @@ namespace RandPicker.Management
             _config.DefaultPage = (DefaultPageMode)_defaultPageComboBox.SelectedIndex;
             // 保存配置
             _config.BorderColor = _borderColorTextBox.Text;
+            _config.UseRSAEncryption = _rsaEncryptCheckBox.IsChecked ?? false;
             ConfigurationManager.SaveConfig(_config, _configPath);
 
             // 更新主窗口边框颜色

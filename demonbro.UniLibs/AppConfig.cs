@@ -11,5 +11,6 @@ namespace demonbro.UniLibs
         }
         public DefaultPageMode DefaultPage { get; set; } = DefaultPageMode.MainPage;
         public string BorderColor { get; set; } = "#63B8FF";
+        public bool UseRSAEncryption { get; set; }
     }
 }

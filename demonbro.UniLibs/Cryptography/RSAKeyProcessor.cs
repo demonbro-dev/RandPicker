@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace demonbro.UniLibs.Cryptography
 {
-    internal class RSAKeyProcessor
+    public class RSAKeyProcessor
     {
         /// <summary>
         /// 从PEM格式解码Base64内容

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace demonbro.UniLibs.Cryptography
 {
-    internal class GenarateRSAKey
+    public class GenerateRSAKey
     {
         /// <summary>
         /// 生成RSA密钥对
