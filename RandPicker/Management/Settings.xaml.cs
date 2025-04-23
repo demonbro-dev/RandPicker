@@ -142,7 +142,7 @@ namespace RandPicker.Management
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             bool originalEncryptionState = _config.UseRSAEncryption;
-            bool newEncryptionState = _rsaEncryptCheckBox.IsChecked ?? false;
+            bool newEncryptionState = _rsaEncryptCheckBox?.IsChecked ?? originalEncryptionState;
 
             try
             {
