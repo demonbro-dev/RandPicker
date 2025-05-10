@@ -14,6 +14,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock x:Name="versionTextBlock"
+                   Panel.ZIndex="0"
                    Grid.Row="0"
                    Text="RandPicker"
                    FontSize="32"
@@ -21,7 +22,7 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
 
-        <StackPanel Grid.Row="1" 
+        <StackPanel Grid.Row="1" Panel.ZIndex="0"
                     VerticalAlignment="Top"
                     Margin="0,0,0,10">
             <TextBlock 
@@ -66,10 +67,47 @@
                 Margin="0,5,0,0"/>
         </StackPanel>
 
-        <Button Grid.Row="2"
-                Content="确定"
-                Width="80" Height="30" Margin="10"
-                HorizontalAlignment="Center"
-                Click="CloseButton_Click"/>
+        <Grid Grid.Row="2" Margin="0,-150,0,0">
+            <!-- 负边距隐藏初始位置 -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"/>
+                <!-- 滑动面板高度 -->
+                <RowDefinition Height="Auto"/>
+                <!-- 按钮区域 -->
+            </Grid.RowDefinitions>
+
+            <!-- 许可证面板 -->
+            <Border x:Name="LicensePanel"
+                    Grid.Row="0"
+                    Background="#FFF"
+                    CornerRadius="3"
+                    BorderThickness="3"
+                    BorderBrush="#DDD"
+                    RenderTransformOrigin="0,1"
+                    Visibility="Collapsed"
+                    ClipToBounds="True">
+                <Border.RenderTransform>
+                    <TranslateTransform Y="150"/>
+                    <!-- 初始隐藏 -->
+                </Border.RenderTransform>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <TextBlock x:Name="LicenseTextBlock" Text="PLACEHOLDER" Margin="10" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Border>
+
+            <!-- 按钮区域（保持在最上层） -->
+            <StackPanel Grid.Row="1" 
+                       Panel.ZIndex="1"
+                       Orientation="Horizontal"
+                       HorizontalAlignment="Center"
+                       Margin="10">
+                <Button Content="确定" Width="80" Height="30" Click="CloseButton_Click"/>
+                <Button x:Name="LicenseButton" 
+                       Content="开放源代码许可" 
+                       Width="120" Height="30" 
+                       Margin="10,0,0,0" 
+                       Click="LicenseButton_Click"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

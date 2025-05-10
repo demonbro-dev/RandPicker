@@ -1,0 +1,18 @@
+﻿本软件使用了以下开放源代码组件，并遵循它们各自的许可证:
+------------------------------------------
+HandyControl
+------------------------------------------
+https://github.com/HandyOrg/HandyControl
+
+Copyright © HandyOrg 2018-2024
+
+Licensed under the MIT License.
+
+------------------------------------------
+Newtonsoft.Json
+------------------------------------------
+https://github.com/JamesNK/Newtonsoft.Json
+
+Copyright (c) 2007 James Newton-King
+
+Licensed under the MIT License.

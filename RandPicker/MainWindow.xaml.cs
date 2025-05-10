@@ -1,9 +1,4 @@
-﻿//
-//
-// MainWindow.xaml.cs : RandPicker 程序主页面后台实现
-//
-//
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;

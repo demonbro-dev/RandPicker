@@ -1,9 +1,4 @@
-﻿//
-//
-// PickerLogic.cs : RandPicker 主程序业务逻辑实现
-//
-//
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
