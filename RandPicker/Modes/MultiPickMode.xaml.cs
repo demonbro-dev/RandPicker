@@ -1,9 +1,4 @@
-﻿//
-//
-// MultiPickMode.xaml.cs : RandPicker 多抽选模式页面后台实现
-//
-//
-using RandPicker.SubModules;
+﻿using RandPicker.SubModules;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;

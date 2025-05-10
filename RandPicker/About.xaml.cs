@@ -1,9 +1,4 @@
-﻿//
-//
-// About.xaml.cs : RandPicker 关于页面
-//
-//
-using System.Windows;
+﻿using System.Windows;
 using System.Reflection;
 using System.Diagnostics;
 using System.Windows.Navigation;

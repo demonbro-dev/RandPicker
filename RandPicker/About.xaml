@@ -59,7 +59,7 @@
                 </Hyperlink>
             </TextBlock>
             <TextBlock 
-                Text="© Copyright 2025 demonbro."
+                Text="© Copyright 2025 HikariUrc."
                 FontSize="13"
                 Foreground="#AAAAAA"
                 HorizontalAlignment="Center"

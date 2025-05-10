@@ -1,9 +1,4 @@
-﻿//
-//
-// FloatWindow.xaml.cs : RandPicker 程序浮动小窗模式后台实现
-//
-//
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 
 namespace RandPicker.Modes

@@ -1,9 +1,4 @@
-﻿//
-//
-// NameListPage.xaml.cs : RandPicker 名单管理器页面后台实现
-//
-//
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;

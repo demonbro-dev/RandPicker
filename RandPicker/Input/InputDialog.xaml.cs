@@ -1,9 +1,4 @@
-﻿//
-//
-// InputDialog.xaml.cs : NameListPage中的输入对话框窗口实现
-//
-//
-using System.Windows;
+﻿using System.Windows;
 
 namespace RandPicker.Input
 {

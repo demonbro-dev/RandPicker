@@ -40,7 +40,7 @@ namespace RandUpdater
 
             try
             {
-                Console.WriteLine("##################################\n#\n# RandUpdater v2\n# Copyright 2025 demonbro. All Rights Reserved.\n#\n##################################\n");
+                Console.WriteLine("##################################\n#\n# RandUpdater v2\n# Copyright 2025 HikariUrc. All Rights Reserved.\n#\n##################################\n");
 
                 var defaultRepoUrl = "https://gitee.com/demonbro-dev/RandPicker";
                 var (owner, repo, source) = ParseRepositoryUrl(defaultRepoUrl);
