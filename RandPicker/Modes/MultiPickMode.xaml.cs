@@ -108,28 +108,88 @@ namespace RandPicker.Modes
             BorderMultiPick.BorderBrush = new SolidColorBrush(RandPckrCoupler.FromHex(config.BorderColor));
         }
 
+        private void InstantMultiSelection()
+        {
+            if (!int.TryParse(countTextBox.Text, out int count) || count < 1) return;
+
+            var currentList = _logic.GetCurrentList();
+            if (currentList.Count == 0)
+            {
+                _results.Clear();
+                _results.Add("无数据");
+                return;
+            }
+
+            // 去重逻辑优化
+            var availableNames = currentList
+                .Where(name => !_pickedNames.Contains(name))
+                .ToList();
+
+            if (availableNames.Count < count)
+            {
+                _pickedNames.Clear();
+                availableNames = new List<string>(currentList);
+            }
+
+            _results.Clear();
+            int requiredCount = Math.Min(count, availableNames.Count);
+            var tempList = new List<string>(availableNames);
+
+            for (int i = 0; i < requiredCount; i++)
+            {
+                if (tempList.Count == 0) break; // 安全防护
+
+                int index = _random.Next(tempList.Count);
+                string selectedName = tempList[index]; // 先保存值
+                _results.Add(selectedName);
+                tempList.RemoveAt(index); // 再移除元素
+                _pickedNames.Add(selectedName); // 使用保存的值
+            }
+
+            // 补充不足数量的占位符
+            if (count > requiredCount)
+            {
+                for (int i = requiredCount; i < count; i++)
+                {
+                    _results.Add("无更多数据");
+                }
+            }
+        }
+
         private void StartMultiButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_isRunning)
-            {
-                _timer.Stop();
-                startMultiButton.Content = "开始抽选";
+            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+            var config = ConfigurationManager.LoadConfig(configPath);
 
-                foreach (var item in _results)
-                {
-                    if (item != "无更多数据" && item != "无数据")
-                    {
-                        _pickedNames.Add(item);
-                    }
-                }
+            if (config.UseInstantMode)
+            {
+                InstantMultiSelection();
+                startMultiButton.Content = "开始抽选";
+                _isRunning = false;
             }
             else
             {
-                if (!ValidateInput()) return;
-                _timer.Start();
-                startMultiButton.Content = "停止抽选";
+                if (_isRunning)
+                {
+                    _timer.Stop();
+                    startMultiButton.Content = "开始抽选";
+
+                    foreach (var item in _results)
+                    {
+                        if (item != "无更多数据" && item != "无数据")
+                        {
+                            _pickedNames.Add(item);
+                        }
+                    }
+                }
+                else
+                {
+                    if (!ValidateInput()) return;
+                    _timer.Start();
+                    startMultiButton.Content = "停止抽选";
+                }
+                _isRunning = !_isRunning;
             }
-            _isRunning = !_isRunning;
         }
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
