@@ -1,9 +1,9 @@
 ﻿using System.Windows.Media;
-using demonbro.UniLibs;
+using RandPicker.SubModules;
 
 namespace RandPicker
 {
-    public static class UniLibsAdapter
+    public static class RandPckrCoupler
     {
         public static Color FromHex(string hex)
         {

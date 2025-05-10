@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace demonbro.UniLibs
+namespace RandPicker.SubModules
 {
     public class AppConfig
     {
@@ -12,5 +12,6 @@ namespace demonbro.UniLibs
         public DefaultPageMode DefaultPage { get; set; } = DefaultPageMode.MainPage;
         public string BorderColor { get; set; } = "#63B8FF";
         public bool UseRSAEncryption { get; set; }
+        public bool UseInstantMode { get; set; } = false;
     }
 }

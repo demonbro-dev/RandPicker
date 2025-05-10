@@ -8,11 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using demonbro.UniLibs;
 using Newtonsoft.Json;
-using demonbro.UniLibs.Cryptography;
-using ComboBox = System.Windows.Controls.ComboBox;
-using Window = System.Windows.Window;
+using RandPicker.SubModules;
+using RandPicker.SubModules.Cryptography;
 
 namespace RandPicker
 {
@@ -97,7 +95,7 @@ namespace RandPicker
                             "config.json");
             var config = ConfigurationManager.LoadConfig(configPath)
                            .WithWpfAdaptations();
-            nameLabel.Foreground = new SolidColorBrush(UniLibsAdapter.FromHex(config.BorderColor));
+            nameLabel.Foreground = new SolidColorBrush(RandPckrCoupler.FromHex(config.BorderColor));
         }
 
         private void LoadListData()
@@ -236,12 +234,73 @@ namespace RandPicker
             if (isRunning)
             {
                 StopSelection();
+                isRunning = false;
             }
             else
             {
-                StartSelection();
+                var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+                var config = ConfigurationManager.LoadConfig(configPath);
+
+                if (config.UseInstantMode)
+                {
+                    InstantSelection();
+                    // 立即模式无需保持运行状态
+                    isRunning = false;
+                    startButton.Dispatcher.Invoke(() =>
+                    {
+                        startButton.Content = "开始抽选"; // 强制刷新按钮文本
+                    });
+                }
+                else
+                {
+                    StartSelection();
+                    isRunning = true;
+                }
             }
-            isRunning = !isRunning;
+        }
+
+        private void InstantSelection()
+        {
+            if (lists.Count == 0)
+            {
+                nameLabel.Text = "无列表数据";
+                return;
+            }
+
+            try
+            {
+                var names = lists[currentList];
+                string selectedName = GetNonRepeatingName(names);
+
+                CurrentDisplayText = selectedName;
+                nameLabel.Text = CurrentDisplayText;
+                _lastStoppedName = selectedName;
+
+                nameLabel.FontWeight = FontWeights.Bold;
+                SetFontColor();
+            }
+            catch (KeyNotFoundException)
+            {
+                CurrentDisplayText = "列表数据异常";
+                nameLabel.Text = CurrentDisplayText;
+            }
+            isRunning = false;
+            startButton.Content = "开始抽选";
+        }
+
+        private string GetNonRepeatingName(List<string> names)
+        {
+            if (names.Count == 1) return names[0];
+
+            string selectedName;
+            int retryCount = 0;
+            do
+            {
+                selectedName = names[random.Next(names.Count)];
+                retryCount++;
+            } while (selectedName == _lastStoppedName && retryCount < 3);
+
+            return selectedName;
         }
 
         private void StartSelection()
@@ -264,6 +323,15 @@ namespace RandPicker
             SetFontColor();
             nameLabel.FontWeight = FontWeights.Bold;
             _lastStoppedName = CurrentDisplayText;
+        }
+        public void ForceStop()
+        {
+            if (timer != null && timer.IsEnabled)
+            {
+                timer.Stop();
+                isRunning = false;
+                startButton.Content = "开始抽选";
+            }
         }
         public void SwitchCurrentList(string listName)
         {

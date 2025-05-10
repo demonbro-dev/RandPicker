@@ -11,9 +11,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using System.Windows.Threading;
-using demonbro.UniLibs;
 using RandPicker.Modes;
 using RandPicker.Management;
+using RandPicker.SubModules;
 
 namespace RandPicker
 {
@@ -44,7 +44,6 @@ namespace RandPicker
                     MessageBox.Show("UI控件未正确初始化");
                     return;
                 }
-                mainFrame.Navigating += MainFrame_Navigating;
                 this.SizeChanged += MainWindow_SizeChanged; // 添加窗口大小变化事件
                 UpdateAnimations(); // 初始化动画参数
                 LoadConfig();
@@ -74,9 +73,13 @@ namespace RandPicker
                 topMostCheckBox.Checked += TopMostCheckBox_Checked;
                 topMostCheckBox.Unchecked += TopMostCheckBox_Unchecked;
 
-                this.Closed += (s, e) => logic.Cleanup();
-                this.Closing += MainWindow_Closing;
-            };
+                this.Closed += (s, e) =>
+                {
+                    logic.Cleanup();
+                    logic.ForceStop(); // 确保立即模式也能正确重置状态
+                };
+            }
+            ;
         }
         public void LoadConfig()
         {
@@ -85,7 +88,7 @@ namespace RandPicker
                             "config.json");
             var config = ConfigurationManager.LoadConfig(configPath)
                            .WithWpfAdaptations();
-            BorderColor = new SolidColorBrush(UniLibsAdapter.FromHex(config.BorderColor));
+            BorderColor = new SolidColorBrush(RandPckrCoupler.FromHex(config.BorderColor));
             if (config.DefaultPage == AppConfig.DefaultPageMode.MultiPick)
             {
                 Dispatcher.BeginInvoke((Action)(() =>
@@ -215,21 +218,6 @@ namespace RandPicker
             };
             storyboard.Begin(this);
         }
-        private void CVPickButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.IsEnabled = false;
-            UpdateAnimations();
-            var storyboard = (Storyboard)FindResource("SlideToLeft");
-            frameContainer.Visibility = Visibility.Visible;
-            mainFrame.Navigate(new CVPick()); // 直接创建实例即可
-
-            storyboard.Completed += (s, _) =>
-            {
-                HideOriginalUI();
-                this.IsEnabled = true;
-            };
-            storyboard.Begin(this);
-        }
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
@@ -239,22 +227,6 @@ namespace RandPicker
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             settingsWindow.ShowDialog();
-        }
-        private void MainFrame_Navigating(object sender, NavigatingCancelEventArgs e)
-        {
-            // 离开页面时释放资源
-            if (mainFrame.Content is CVPick cvPick)
-            {
-                cvPick.Dispose();
-            }
-        }
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // 释放当前活动页面中的CVPick
-            if (mainFrame.Content is CVPick cvPick)
-            {
-                cvPick.Dispose();
-            }
         }
         public void PlayReturnAnimation(bool isMultiPickMode = false) // 保持与原有参数兼容
         {

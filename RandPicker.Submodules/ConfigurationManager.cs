@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.Json;
 
-namespace demonbro.UniLibs
+namespace RandPicker.SubModules
 {
     public static class ConfigurationManager
     {

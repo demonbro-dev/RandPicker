@@ -1,17 +1,13 @@
-﻿using System.Windows;
+﻿using RandPicker.Input;
+using RandPicker.SubModules;
+using RandPicker.SubModules.Cryptography;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace RandPicker.Management
 {
-    using demonbro.UniLibs;
-    using demonbro.UniLibs.Cryptography;
-    using RandPicker.Input;
-    using RandPicker;
-    using System.IO;
-    using System.Windows.Media;
-    using static demonbro.UniLibs.AppConfig;
-    using Newtonsoft.Json;
-
     public partial class Settings : Window
     {
         private string _configPath;
@@ -19,6 +15,7 @@ namespace RandPicker.Management
         private TextBox _borderColorTextBox;
         private ComboBox _defaultPageComboBox;
         private CheckBox _rsaEncryptCheckBox;
+        private CheckBox _instantModeCheckBox;
         public PickerLogic PickerLogic { get; set; }
 
         public Settings(string configPath)
@@ -43,7 +40,7 @@ namespace RandPicker.Management
                         var colorPreview = new Button
                         {
                             Content = "■",
-                            Foreground = new SolidColorBrush(UniLibsAdapter.FromHex(_config.BorderColor)),
+                            Foreground = new SolidColorBrush(RandPckrCoupler.FromHex(_config.BorderColor)),
                             Width = 50,
                             FontSize = 14,
                             Margin = new Thickness(5, 0, 0, 0),
@@ -65,6 +62,13 @@ namespace RandPicker.Management
                         AddSettingItem("启动时默认页面", _defaultPageComboBox);
                         break;
                     case "抽选设置":
+                        _instantModeCheckBox = new CheckBox // 改为使用类级别字段
+                        {
+                            IsChecked = _config.UseInstantMode,
+                            Content = "使用立即抽选模式",
+                            VerticalAlignment = VerticalAlignment.Center
+                        };
+                        AddSettingItem("抽选模式", _instantModeCheckBox);
                         break;
                     case "RandPicker Labs":
                         _rsaEncryptCheckBox = new CheckBox
@@ -144,11 +148,16 @@ namespace RandPicker.Management
             bool originalEncryptionState = _config.UseRSAEncryption;
             bool newEncryptionState = _rsaEncryptCheckBox?.IsChecked ?? originalEncryptionState;
 
+            if (_instantModeCheckBox != null)
+            {
+                _config.UseInstantMode = _instantModeCheckBox.IsChecked ?? false;
+            }
+
             try
             {
                 // 保存配置（包含加密状态）
                 _config.UseRSAEncryption = newEncryptionState;
-                _config.DefaultPage = (DefaultPageMode)_defaultPageComboBox.SelectedIndex;
+                _config.DefaultPage = (SubModules.AppConfig.DefaultPageMode)_defaultPageComboBox.SelectedIndex;
                 ConfigurationManager.SaveConfig(_config, _configPath);
 
                 // 如果加密状态发生改变，触发文件格式转换
@@ -206,7 +215,7 @@ namespace RandPicker.Management
                 {
                     try
                     {
-                        var color = UniLibsAdapter.FromHex(_config.BorderColor);
+                        var color = RandPckrCoupler.FromHex(_config.BorderColor);
                         mainWindow.BorderColor = new SolidColorBrush(color);
                     }
                     catch { /* 忽略无效颜色值 */ }

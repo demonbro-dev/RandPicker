@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace demonbro.UniLibs.Cryptography
+namespace RandPicker.SubModules.Cryptography
 {
     public class GenerateRSAKey
     {
