@@ -147,7 +147,10 @@ namespace RandPicker.Management
         {
             bool originalEncryptionState = _config.UseRSAEncryption;
             bool newEncryptionState = _rsaEncryptCheckBox?.IsChecked ?? originalEncryptionState;
-
+            if (!string.IsNullOrEmpty(_borderColorTextBox?.Text))
+            {
+                _config.BorderColor = _borderColorTextBox.Text;
+            }
             if (_instantModeCheckBox != null)
             {
                 _config.UseInstantMode = _instantModeCheckBox.IsChecked ?? false;
@@ -158,6 +161,11 @@ namespace RandPicker.Management
                 // 保存配置（包含加密状态）
                 _config.UseRSAEncryption = newEncryptionState;
                 _config.DefaultPage = (SubModules.AppConfig.DefaultPageMode)_defaultPageComboBox.SelectedIndex;
+                // 更新配置中的边框颜色
+                if (_borderColorTextBox != null)
+                {
+                    _config.BorderColor = _borderColorTextBox.Text;
+                }
                 ConfigurationManager.SaveConfig(_config, _configPath);
 
                 // 如果加密状态发生改变，触发文件格式转换
