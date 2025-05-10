@@ -108,6 +108,7 @@
                        Margin="10,0,0,0" 
                        Click="LicenseButton_Click"/>
             </StackPanel>
+            <Border Background="White" BorderBrush="#DDD" BorderThickness="1" Grid.Row="1"/>
         </Grid>
     </Grid>
 </Window>
