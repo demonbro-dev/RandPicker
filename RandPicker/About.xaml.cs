@@ -40,7 +40,7 @@ namespace RandPicker
 
             DoubleAnimation animation = new DoubleAnimation
             {
-                Duration = TimeSpan.FromSeconds(0.4),
+                Duration = TimeSpan.FromSeconds(0.5),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
 
