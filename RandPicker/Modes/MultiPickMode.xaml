@@ -53,11 +53,15 @@
                     HorizontalAlignment="Left" VerticalAlignment="Bottom"
                     Margin="10" MinWidth="100" MinHeight="40" Click="BackButton_Click"/>
 
+            <ComboBox x:Name="listComboBox" Margin="147,0,18,0" MinWidth="160" MaxWidth="220" MinHeight="40" 
+                  VerticalAlignment="Center" HorizontalAlignment="Right"
+                  SelectionChanged="ListComboBox_SelectionChanged"/>
+
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="startMultiButton" Content="开始抽选" 
-                        MinWidth="120" MinHeight="40" Margin="5" Click="StartMultiButton_Click"/>
+                        MinWidth="120" MinHeight="40" Margin="10" Click="StartMultiButton_Click"/>
 
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                     <TextBlock Text="连续抽选人数:" Margin="5,0" VerticalAlignment="Center"/>
                     <TextBox x:Name="countTextBox" Width="80" Margin="5" 
                              Text="2" TextAlignment="Center"/>

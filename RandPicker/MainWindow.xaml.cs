@@ -184,6 +184,36 @@ namespace RandPicker
             ((DoubleAnimation)slideFromLeft.Children[0]).From = -width;
             ((DoubleAnimation)slideFromLeft.Children[1]).To = width;
         }
+        private void HotReloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // 清空所有抽选记录
+                if (logic != null)
+                {
+                    // 如果是多选模式则重置其记录
+                    if (mainFrame.Content is MultiPickMode multiPick)
+                    {
+                        multiPick.ResetPickedNames();
+                    }
+
+                    // 强制重新加载名单数据
+                    logic.LoadListData();
+                    logic.ReloadLists();
+
+                    // 更新主界面显示
+                    listComboBox.Items.Refresh();
+                    listComboBox.SelectedItem = logic.CurrentList;
+                    nameLabel.Text = "点击开始";
+                }
+
+                MessageBox.Show("名单已重新加载", "操作成功", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"热重载失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         private void BtnOpenNameListManager_Click(object sender, RoutedEventArgs e)
         {
             this.IsEnabled = false;
@@ -202,9 +232,14 @@ namespace RandPicker
         {
             this.IsEnabled = false;
             UpdateAnimations();
+
+            // 获取当前选中的列表名称
+            string currentList = listComboBox.SelectedItem?.ToString() ?? logic.CurrentList;
+
+            // 传递当前选中列表给多选模式
             var storyboard = (Storyboard)FindResource("SlideToLeft");
-            frameContainer.Visibility = Visibility.Visible; // 显示容器
-            mainFrame.Navigate(new MultiPickMode(logic));
+            frameContainer.Visibility = Visibility.Visible;
+            mainFrame.Navigate(new MultiPickMode(logic, currentList)); // 传入当前列表
 
             storyboard.Completed += (s, _) =>
             {
@@ -223,7 +258,7 @@ namespace RandPicker
             };
             settingsWindow.ShowDialog();
         }
-        public void PlayReturnAnimation(bool isMultiPickMode = false) // 保持与原有参数兼容
+        public void PlayReturnAnimation(bool isMultiPickMode = false)
         {
             this.IsEnabled = false;
             ShowOriginalUI();
@@ -231,6 +266,12 @@ namespace RandPicker
             storyboard.Completed += (s, _) =>
             {
                 frameContainer.Visibility = Visibility.Collapsed;
+                // 当从多选模式返回时同步列表状态
+                if (isMultiPickMode && mainFrame.Content is MultiPickMode multiPick)
+                {
+                    logic.SwitchCurrentList(multiPick.CurrentList); // 同步最新列表状态
+                    listComboBox.SelectedItem = logic.CurrentList;  // 更新主窗口组合框
+                }
                 this.IsEnabled = true;
             };
             storyboard.Begin(this);

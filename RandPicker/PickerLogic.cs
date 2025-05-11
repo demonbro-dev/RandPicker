@@ -93,7 +93,7 @@ namespace RandPicker
             nameLabel.Foreground = new SolidColorBrush(RandPckrCoupler.FromHex(config.BorderColor));
         }
 
-        private void LoadListData()
+        public void LoadListData()
         {
             var jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "namelist.json");
             var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
@@ -334,6 +334,7 @@ namespace RandPicker
             {
                 currentList = listName;
 
+                // 统一更新所有关联的UI控件
                 if (listComboBox != null)
                 {
                     listComboBox.Dispatcher.BeginInvoke((Action)(() =>

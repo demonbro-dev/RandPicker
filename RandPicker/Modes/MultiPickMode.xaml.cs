@@ -19,15 +19,22 @@ namespace RandPicker.Modes
         private Random _random = new Random();
         private HashSet<string> _pickedNames = new HashSet<string>();
         private string _currentListName;
+        public string CurrentList => _currentListName; // 暴露当前列表名称
 
-        public MultiPickMode(PickerLogic logic)
+        public MultiPickMode(PickerLogic logic, string initialList)
         {
             InitializeComponent();
             _logic = logic;
+
+            // 初始化时直接使用传入的列表名称
+            listComboBox.ItemsSource = _logic.GetCurrentLists().Keys;
+            listComboBox.SelectedItem = initialList;
+
+            // 其他原有初始化代码...
             resultItemsControl.ItemsSource = _results;
             SetBorderColor();
             InitializeTimer();
-            _currentListName = _logic.CurrentList;
+            _currentListName = initialList;  // 使用传入的列表名称
         }
 
         private void InitializeTimer()
@@ -186,6 +193,18 @@ namespace RandPicker.Modes
                 _isRunning = !_isRunning;
             }
         }
+
+        private void ListComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listComboBox.SelectedItem == null || _logic == null)
+                return;
+
+            string selectedList = listComboBox.SelectedItem.ToString();
+            _logic.SwitchCurrentList(selectedList);
+            _pickedNames.Clear();  // 切换列表时清空已选记录
+            _currentListName = selectedList;
+        }
+
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             if (Application.Current.MainWindow is MainWindow mainWindow)
@@ -226,6 +245,17 @@ namespace RandPicker.Modes
                 return false;
             }
             return true;
+        }
+        public void RefreshLists()
+        {
+            listComboBox.ItemsSource = _logic.GetCurrentLists().Keys;
+            listComboBox.SelectedItem = _logic.CurrentList;
+        }
+        public void ResetPickedNames()
+        {
+            _pickedNames.Clear();
+            _currentListName = _logic.CurrentList;
+            _results.Clear();
         }
     }
 }
