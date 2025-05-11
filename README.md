@@ -19,3 +19,8 @@ RandPicker具有多种便于使用的功能，具体如下：
 ## 许可证
 [MIT License](https://github.com/demonbro-dev/RandPicker/blob/master/LICENSE.txt)
 
+## 鸣谢
+**RandPicker 的诞生离不开以下开源项目的支持:**
+- [HandyControl](https://github.com/HandyOrg/HandyControl)
+- [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+
