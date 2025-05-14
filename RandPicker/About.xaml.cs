@@ -5,12 +5,12 @@ using System.Windows.Navigation;
 using System.Windows.Media.Animation;
 using System.Windows.Media;
 using System.IO;
+using System.Windows.Controls.Primitives;
 
 namespace RandPicker
 {
     public partial class About : Window
     {
-        private bool _isLicenseShown = false;
         public About()
         {
             InitializeComponent();
@@ -29,22 +29,23 @@ namespace RandPicker
         }
         private void LicenseButton_Click(object sender, RoutedEventArgs e)
         {
+            var button = (ToggleButton)sender;
             var transform = LicensePanel.RenderTransform as TranslateTransform;
             if (transform == null) return;
 
             // 显示时先设置可见性
-            if (!_isLicenseShown)
+            if (button.IsChecked == true)
             {
                 LicensePanel.Visibility = Visibility.Visible;
             }
 
             DoubleAnimation animation = new DoubleAnimation
             {
-                Duration = TimeSpan.FromSeconds(0.5),
+                Duration = TimeSpan.FromSeconds(0.6),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
 
-            if (!_isLicenseShown)
+            if (button.IsChecked == true)
             {
                 animation.From = 150;
                 animation.To = 0;
@@ -53,7 +54,6 @@ namespace RandPicker
             {
                 animation.From = 0;
                 animation.To = 150;
-                // 动画完成后隐藏
                 animation.Completed += (s, _) =>
                 {
                     LicensePanel.Visibility = Visibility.Collapsed;
@@ -61,7 +61,6 @@ namespace RandPicker
             }
 
             transform.BeginAnimation(TranslateTransform.YProperty, animation);
-            _isLicenseShown = !_isLicenseShown;
         }
         private void LoadLicenseText()
         {

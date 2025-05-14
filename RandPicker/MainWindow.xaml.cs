@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using RandPicker.Modes;
 using RandPicker.Management;
 using RandPicker.SubModules;
+using RandPicker.SubModules.Cryptography;
 
 namespace RandPicker
 {
@@ -90,6 +91,14 @@ namespace RandPicker
                 {
                     MultiPickButton_Click(null, null);
                 }), DispatcherPriority.Loaded);
+            }
+            if (!config.UseRSAEncryption)
+            {
+                NameListManager.IsEnabled = true;
+            }
+            else
+            {
+                NameListManager.IsEnabled = false;
             }
         }
 

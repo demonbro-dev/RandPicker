@@ -48,7 +48,8 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" 
                    HorizontalAlignment="Center" Margin="10">
-            <Button x:Name="startButton" Content="开始抽选" 
+                <Button Content="多抽选模式" Margin="5" Height="40" MinWidth="120" Click="MultiPickButton_Click"/>
+                <Button x:Name="startButton" Content="开始抽选" 
                     MinWidth="120" MinHeight="40" Margin="5" 
                 HorizontalAlignment="Center"/>
             <StackPanel Grid.Row="2" Orientation="Vertical" 
@@ -88,8 +89,7 @@
                 <TranslateTransform x:Name="subMenuTransform" Y="100"/>
             </StackPanel.RenderTransform>
             <Button Content="热重载" Margin="5" Height="35" MinWidth="100" Click="HotReloadButton_Click"/>
-            <Button Content="打开名单管理器" Margin="5" Height="35" MinWidth="100" Click="BtnOpenNameListManager_Click"/>
-            <Button Content="多抽选模式" Margin="5" Height="35" MinWidth="100" Click="MultiPickButton_Click"/>
+            <Button x:Name="NameListManager" Content="打开名单管理器" Margin="5" Height="35" MinWidth="100" Click="BtnOpenNameListManager_Click"/>
             <Button Content="检查更新" Margin="5" Height="35" MinWidth="100" Click="CheckUpdateButton_Click"/>
             <Button Content="设置" Margin="5" Height="35" MinWidth="100" Click="SettingsButton_Click"/>
             <Button Content="关于RandPicker" Margin="5" Height="35" MinWidth="100" Click="AboutButton_Click"/>

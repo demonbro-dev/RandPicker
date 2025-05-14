@@ -102,11 +102,11 @@
                        HorizontalAlignment="Center"
                        Margin="10">
                 <Button Content="确定" Width="80" Height="30" Click="CloseButton_Click"/>
-                <Button x:Name="LicenseButton" 
-                       Content="开放源代码许可" 
-                       Width="120" Height="30" 
-                       Margin="10,0,0,0" 
-                       Click="LicenseButton_Click"/>
+                <ToggleButton x:Name="LicenseButton" 
+                        Content="开放源代码许可" 
+                        Width="120" Height="30" 
+                        Margin="10,0,0,0" 
+                        Click="LicenseButton_Click"/>
             </StackPanel>
             <Border Background="White" BorderBrush="#DDD" BorderThickness="1" Grid.Row="1"/>
         </Grid>
